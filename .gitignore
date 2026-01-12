@@ -13,3 +13,40 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Firebase
+google-services.json
+
+# API Keys
+secrets.properties
+
+# Node modules (if backend added)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Build outputs
+dist/
+out/
+target/
+
+# IDE
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Temporary files
+/tmp/
+*.tmp
+*.bak
+*.cache
