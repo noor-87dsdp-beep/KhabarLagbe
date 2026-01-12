@@ -38,7 +38,17 @@ fun HomeScreen(
     var searchQuery by remember { mutableStateOf("") }
     var selectedFilter by remember { mutableStateOf("All") }
     
-    // Dummy data - would come from ViewModel in real app
+    // TODO: Replace with ViewModel and proper data loading
+    // For production: Implement HomeViewModel with StateFlow for restaurants
+    // and handle loading, success, and error states
+    // Example:
+    // val uiState by viewModel.restaurantsState.collectAsState()
+    // when (uiState) {
+    //     is Loading -> ShowLoadingShimmer()
+    //     is Success -> ShowRestaurantList(data)
+    //     is Error -> ShowErrorMessage()
+    // }
+    // Currently using sample data for UI demonstration
     val restaurants = remember { getSampleRestaurants() }
     val categories = listOf("All", "Pizza", "Burger", "Asian", "Healthy", "Dessert")
     

@@ -16,12 +16,10 @@
     <!-- Camera for profile pictures and restaurant photos -->
     <uses-permission android:name="android.permission.CAMERA" />
     
-    <!-- Storage for image uploads -->
+    <!-- Storage for image uploads (API 32 and below) -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" 
         android:maxSdkVersion="32" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32"
-        tools:ignore="ScopedStorage" />
+    <!-- For API 33+, use specific media permissions -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
     <application
