@@ -17,6 +17,7 @@ import androidx.navigation.NavController
 import com.noor.khabarlagbe.domain.model.PaymentMethod
 import com.noor.khabarlagbe.navigation.Screen
 import com.noor.khabarlagbe.ui.theme.Primary
+import com.noor.khabarlagbe.util.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,11 +25,11 @@ fun CheckoutScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    var selectedPaymentMethod by remember { mutableStateOf(PaymentMethod.CASH) }
-    val deliveryAddress = "123 Main Street, Apt 4B, New York, NY 10001"
+    var selectedPaymentMethod by remember { mutableStateOf(PaymentMethod.CASH_ON_DELIVERY) }
+    val deliveryAddress = "House: 12, Road: 5, Gulshan 2, Dhaka-1212"
     val subtotal = 698.0
-    val deliveryFee = 20.0
-    val tax = 71.80
+    val deliveryFee = 30.0
+    val tax = 34.90
     val total = subtotal + deliveryFee + tax
     
     Scaffold(
@@ -122,18 +123,30 @@ fun CheckoutScreen(
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Icon(
                                     imageVector = when (method) {
-                                        PaymentMethod.CASH -> Icons.Filled.Money
+                                        PaymentMethod.BKASH -> Icons.Filled.Wallet
+                                        PaymentMethod.NAGAD -> Icons.Filled.Wallet
+                                        PaymentMethod.ROCKET -> Icons.Filled.Wallet
+                                        PaymentMethod.UPAY -> Icons.Filled.Wallet
+                                        PaymentMethod.SSL_COMMERZ -> Icons.Filled.CreditCard
+                                        PaymentMethod.CASH_ON_DELIVERY -> Icons.Filled.Money
                                         PaymentMethod.CREDIT_CARD -> Icons.Filled.CreditCard
                                         PaymentMethod.DEBIT_CARD -> Icons.Filled.Payment
-                                        PaymentMethod.MOBILE_WALLET -> Icons.Filled.Wallet
-                                        PaymentMethod.UPI -> Icons.Filled.QrCode
                                     },
                                     contentDescription = null,
                                     tint = if (selectedPaymentMethod == method) Primary else MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(
-                                    text = method.name.replace("_", " "),
+                                    text = when (method) {
+                                        PaymentMethod.BKASH -> "bKash"
+                                        PaymentMethod.NAGAD -> "Nagad"
+                                        PaymentMethod.ROCKET -> "Rocket"
+                                        PaymentMethod.UPAY -> "Upay"
+                                        PaymentMethod.SSL_COMMERZ -> "Card Payment (SSL Commerz)"
+                                        PaymentMethod.CASH_ON_DELIVERY -> "Cash on Delivery"
+                                        PaymentMethod.CREDIT_CARD -> "Credit Card"
+                                        PaymentMethod.DEBIT_CARD -> "Debit Card"
+                                    },
                                     style = MaterialTheme.typography.bodyLarge
                                 )
                             }
@@ -172,7 +185,7 @@ fun CheckoutScreen(
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = "₹${"%.2f".format(total)}",
+                                text = "${Constants.CURRENCY_SYMBOL}${"%.2f".format(total)}",
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold,
                                 color = Primary
@@ -217,7 +230,7 @@ private fun PriceRow(label: String, amount: Double) {
             style = MaterialTheme.typography.bodyLarge
         )
         Text(
-            text = "₹${"%.2f".format(amount)}",
+            text = "${Constants.CURRENCY_SYMBOL}${"%.2f".format(amount)}",
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Medium
         )

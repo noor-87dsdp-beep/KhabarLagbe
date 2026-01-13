@@ -141,24 +141,24 @@
     <string name="settings">Settings</string>
     <string name="language">Language</string>
     <string name="notifications">Notifications</string>
-    <string name="help_support">Help & Support</string>
+    <string name="help_support">Help &amp; Support</string>
     <string name="about">About</string>
-    <string name="terms_conditions">Terms & Conditions</string>
+    <string name="terms_conditions">Terms &amp; Conditions</string>
     <string name="privacy_policy">Privacy Policy</string>
     
     <!-- Cuisine Categories (Bangladesh) -->
     <string name="bengali_traditional">Bengali Traditional</string>
-    <string name="biriyani_tehari">Biriyani & Tehari</string>
+    <string name="biriyani_tehari">Biriyani &amp; Tehari</string>
     <string name="kacchi_house">Kacchi House</string>
     <string name="chinese_bangla">Chinese-Bangla</string>
     <string name="thai_bangla">Thai-Bangla</string>
     <string name="fast_food">Fast Food</string>
     <string name="street_food">Street Food</string>
-    <string name="mishti_sweets">Mishti & Sweets</string>
+    <string name="mishti_sweets">Mishti &amp; Sweets</string>
     <string name="iftar_special">Iftar Special</string>
     <string name="breakfast">Breakfast</string>
     <string name="healthy">Healthy</string>
-    <string name="cafe_coffee">Café & Coffee</string>
+    <string name="cafe_coffee">Café &amp; Coffee</string>
     
     <!-- Messages -->
     <string name="order_placed_success">Your order has been placed successfully!</string>

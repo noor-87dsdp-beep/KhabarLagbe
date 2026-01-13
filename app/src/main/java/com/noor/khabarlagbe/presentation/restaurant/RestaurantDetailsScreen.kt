@@ -20,6 +20,7 @@ import coil.compose.AsyncImage
 import com.noor.khabarlagbe.domain.model.*
 import com.noor.khabarlagbe.navigation.Screen
 import com.noor.khabarlagbe.ui.theme.*
+import com.noor.khabarlagbe.util.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -106,7 +107,7 @@ fun RestaurantDetailsScreen(
                             )
                             RestaurantStat(
                                 icon = Icons.Filled.LocalShipping,
-                                value = if (restaurant.deliveryFee == 0.0) "Free" else "₹${restaurant.deliveryFee}",
+                                value = if (restaurant.deliveryFee == 0.0) "Free" else "${Constants.CURRENCY_SYMBOL}${restaurant.deliveryFee}",
                                 label = "Delivery fee"
                             )
                         }
@@ -207,7 +208,7 @@ fun MenuItemCard(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "₹${"%.2f".format(item.price)}",
+                    text = "${Constants.CURRENCY_SYMBOL}${"%.2f".format(item.price)}",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = Primary
