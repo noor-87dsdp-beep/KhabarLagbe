@@ -66,10 +66,40 @@ const restaurantSchema = new mongoose.Schema({
     type: Number,
     default: 0, // in BDT paisa
   },
+  deliveryRadius: {
+    type: Number,
+    default: 5, // in km
+  },
+  deliveryZones: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Zone',
+  }],
   commission: {
     type: Number,
     default: 18, // percentage
   },
+  documents: {
+    tradeLicense: String,
+    nidOwner: String,
+    bankDetails: String,
+  },
+  payoutMethod: {
+    type: {
+      type: String,
+      enum: ['bkash', 'nagad', 'bank'],
+      default: 'bkash',
+    },
+    accountNumber: String,
+    accountName: String,
+    bankName: String,
+    branchName: String,
+  },
+  approvalStatus: {
+    type: String,
+    enum: ['pending', 'approved', 'rejected'],
+    default: 'pending',
+  },
+  rejectionReason: String,
   isActive: {
     type: Boolean,
     default: true,

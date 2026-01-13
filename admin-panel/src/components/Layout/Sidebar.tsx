@@ -9,11 +9,13 @@ export default function Sidebar({ isOpen }: SidebarProps) {
 
   const menuItems = [
     { path: '/dashboard', label: 'ড্যাশবোর্ড', icon: '📊' },
+    { path: '/zones', label: 'জোন ব্যবস্থাপনা', icon: '🗺️' },
     { path: '/users', label: 'ব্যবহারকারী', icon: '👥' },
     { path: '/restaurants', label: 'রেস্টুরেন্ট', icon: '🍽️' },
     { path: '/riders', label: 'রাইডার', icon: '🏍️' },
     { path: '/orders', label: 'অর্ডার', icon: '📦' },
     { path: '/payments', label: 'পেমেন্ট', icon: '💰' },
+    { path: '/promo-codes', label: 'প্রোমো কোড', icon: '🎟️' },
     { path: '/marketing', label: 'মার্কেটিং', icon: '📢' },
     { path: '/analytics', label: 'বিশ্লেষণ', icon: '📈' },
     { path: '/settings', label: 'সেটিংস', icon: '⚙️' },
