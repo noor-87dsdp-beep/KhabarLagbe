@@ -1,6 +1,9 @@
 package com.noor.khabarlagbe.di
 
 import android.content.Context
+import androidx.room.Room
+import com.noor.khabarlagbe.data.local.KhabarLagbeDatabase
+import com.noor.khabarlagbe.data.local.dao.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -8,27 +11,50 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-/**
- * Database Module for Room Database
- * 
- * This is a stub implementation. To enable:
- * 1. Uncomment Room dependencies in build.gradle.kts
- * 2. Create AppDatabase with @Database annotation
- * 3. Define DAOs and Entities
- * 4. Provide database instance here
- */
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {
     
-    // TODO: Uncomment when Room is ready
-    // @Provides
-    // @Singleton
-    // fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
-    //     return Room.databaseBuilder(
-    //         context,
-    //         AppDatabase::class.java,
-    //         "khabarlagbe_database"
-    //     ).build()
-    // }
+    @Provides
+    @Singleton
+    fun provideKhabarLagbeDatabase(@ApplicationContext context: Context): KhabarLagbeDatabase {
+        return Room.databaseBuilder(
+            context,
+            KhabarLagbeDatabase::class.java,
+            "khabarlagbe_database"
+        )
+            .fallbackToDestructiveMigration()
+            .build()
+    }
+    
+    @Provides
+    @Singleton
+    fun provideUserDao(database: KhabarLagbeDatabase): UserDao {
+        return database.userDao()
+    }
+    
+    @Provides
+    @Singleton
+    fun provideAddressDao(database: KhabarLagbeDatabase): AddressDao {
+        return database.addressDao()
+    }
+    
+    @Provides
+    @Singleton
+    fun provideCartDao(database: KhabarLagbeDatabase): CartDao {
+        return database.cartDao()
+    }
+    
+    @Provides
+    @Singleton
+    fun provideFavoriteDao(database: KhabarLagbeDatabase): FavoriteDao {
+        return database.favoriteDao()
+    }
+    
+    @Provides
+    @Singleton
+    fun provideRecentSearchDao(database: KhabarLagbeDatabase): RecentSearchDao {
+        return database.recentSearchDao()
+    }
 }
+
