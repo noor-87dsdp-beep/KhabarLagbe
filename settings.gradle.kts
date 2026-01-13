@@ -21,4 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "KhabarLagbe"
 include(":app")
+include(":rider-app")
+include(":restaurant-app")
  
