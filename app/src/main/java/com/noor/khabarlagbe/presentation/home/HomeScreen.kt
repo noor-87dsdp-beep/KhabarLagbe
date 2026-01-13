@@ -28,6 +28,7 @@ import com.noor.khabarlagbe.domain.model.Restaurant
 import com.noor.khabarlagbe.navigation.Screen
 import com.noor.khabarlagbe.ui.theme.*
 import com.noor.khabarlagbe.util.Constants
+import com.noor.khabarlagbe.util.SampleData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +51,7 @@ fun HomeScreen(
     //     is Error -> ShowErrorMessage()
     // }
     // Currently using sample data for UI demonstration
-    val restaurants = remember { getSampleRestaurants() }
+    val restaurants = remember { SampleData.getBangladeshRestaurants() }
     val categories = Constants.Cuisines.CATEGORIES
     
     Scaffold(
@@ -599,150 +600,3 @@ fun RestaurantCard(
     }
 }
 
-// Sample data - Bangladesh restaurants
-fun getSampleRestaurants() = listOf(
-    Restaurant(
-        id = "1",
-        name = "Star Kabab & Restaurant",
-        description = "Authentic Mughlai cuisine with premium kacchi biriyani",
-        imageUrl = "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800",
-        cuisine = listOf("Bengali Traditional", "Biriyani & Tehari", "Mughlai"),
-        rating = 4.6,
-        totalReviews = 450,
-        deliveryTime = 35,
-        deliveryFee = 0.0,
-        minOrderAmount = 300.0,
-        isOpen = true,
-        distance = 2.1,
-        latitude = 23.7808875,
-        longitude = 90.4133503,
-        address = "Gulshan 2, Dhaka",
-        tags = listOf("Featured", "Free Delivery")
-    ),
-    Restaurant(
-        id = "2",
-        name = "Kacchi Bhai",
-        description = "Home of the best kacchi biriyani in Dhaka",
-        imageUrl = "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?w=800",
-        cuisine = listOf("Kacchi House", "Biriyani & Tehari"),
-        rating = 4.8,
-        totalReviews = 890,
-        deliveryTime = 40,
-        deliveryFee = 30.0,
-        minOrderAmount = 400.0,
-        isOpen = true,
-        distance = 3.5,
-        latitude = 23.7925,
-        longitude = 90.4078,
-        address = "Banani, Dhaka",
-        tags = listOf("Popular", "Most Ordered")
-    ),
-    Restaurant(
-        id = "3",
-        name = "Sultans Dine",
-        description = "Traditional Bengali and Mughlai dishes",
-        imageUrl = "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=800",
-        cuisine = listOf("Bengali Traditional", "Mughlai", "Biriyani & Tehari"),
-        rating = 4.5,
-        totalReviews = 320,
-        deliveryTime = 30,
-        deliveryFee = 40.0,
-        minOrderAmount = 350.0,
-        isOpen = true,
-        distance = 1.8,
-        latitude = 23.8103,
-        longitude = 90.4125,
-        address = "Uttara, Dhaka",
-        tags = listOf("Featured")
-    ),
-    Restaurant(
-        id = "4",
-        name = "Chillox",
-        description = "Modern café with fusion dishes and great ambiance",
-        imageUrl = "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800",
-        cuisine = listOf("Café & Coffee", "Fast Food", "Chinese-Bangla"),
-        rating = 4.4,
-        totalReviews = 275,
-        deliveryTime = 25,
-        deliveryFee = 50.0,
-        minOrderAmount = 250.0,
-        isOpen = true,
-        distance = 2.8,
-        latitude = 23.7465,
-        longitude = 90.3763,
-        address = "Dhanmondi, Dhaka",
-        tags = listOf("Trending")
-    ),
-    Restaurant(
-        id = "5",
-        name = "Fakruddin Biriyani",
-        description = "Legendary biriyani since 1985",
-        imageUrl = "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800",
-        cuisine = listOf("Biriyani & Tehari", "Bengali Traditional"),
-        rating = 4.7,
-        totalReviews = 1240,
-        deliveryTime = 45,
-        deliveryFee = 35.0,
-        minOrderAmount = 500.0,
-        isOpen = true,
-        distance = 4.2,
-        latitude = 23.7644,
-        longitude = 90.3686,
-        address = "Old Dhaka",
-        tags = listOf("Featured", "Popular", "Most Ordered")
-    ),
-    Restaurant(
-        id = "6",
-        name = "Café Cinnamon",
-        description = "Premium coffee and continental breakfast",
-        imageUrl = "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=800",
-        cuisine = listOf("Café & Coffee", "Breakfast", "Healthy"),
-        rating = 4.3,
-        totalReviews = 156,
-        deliveryTime = 20,
-        deliveryFee = 40.0,
-        minOrderAmount = 200.0,
-        isOpen = true,
-        distance = 1.5,
-        latitude = 23.7808,
-        longitude = 90.4217,
-        address = "Gulshan 1, Dhaka",
-        tags = listOf("New")
-    ),
-    Restaurant(
-        id = "7",
-        name = "KFC Bangladesh",
-        description = "Finger lickin' good fried chicken",
-        imageUrl = "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=800",
-        cuisine = listOf("Fast Food", "American"),
-        rating = 4.2,
-        totalReviews = 580,
-        deliveryTime = 30,
-        deliveryFee = 0.0,
-        minOrderAmount = 300.0,
-        isOpen = true,
-        distance = 2.3,
-        latitude = 23.7925,
-        longitude = 90.4078,
-        address = "Banani, Dhaka",
-        tags = listOf("Free Delivery")
-    ),
-    Restaurant(
-        id = "8",
-        name = "The Food Republic",
-        description = "Multi-cuisine restaurant with diverse menu",
-        imageUrl = "https://images.unsplash.com/photo-1552566626-52f8b828add9?w=800",
-        cuisine = listOf("Chinese-Bangla", "Thai-Bangla", "Fast Food"),
-        rating = 4.4,
-        totalReviews = 412,
-        deliveryTime = 35,
-        deliveryFee = 45.0,
-        minOrderAmount = 350.0,
-        isOpen = true,
-        distance = 3.1,
-        latitude = 23.8041,
-        longitude = 90.4152,
-        address = "Bashundhara, Dhaka",
-        tags = listOf("Popular")
-    )
-)
