@@ -20,6 +20,8 @@ import coil.compose.AsyncImage
 import com.noor.khabarlagbe.domain.model.*
 import com.noor.khabarlagbe.navigation.Screen
 import com.noor.khabarlagbe.ui.theme.*
+import com.noor.khabarlagbe.util.Constants
+import com.noor.khabarlagbe.util.SampleData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,7 +31,10 @@ fun RestaurantDetailsScreen(
     modifier: Modifier = Modifier
 ) {
     // TODO: Replace with ViewModel and fetch restaurant by ID
-    val restaurant = remember { getSampleRestaurantDetails(restaurantId) }
+    val restaurant = remember { 
+        SampleData.getBangladeshRestaurants().find { it.id == restaurantId } 
+            ?: SampleData.getBangladeshRestaurants().first()
+    }
     
     Scaffold(
         topBar = {
@@ -106,7 +111,7 @@ fun RestaurantDetailsScreen(
                             )
                             RestaurantStat(
                                 icon = Icons.Filled.LocalShipping,
-                                value = if (restaurant.deliveryFee == 0.0) "Free" else "₹${restaurant.deliveryFee}",
+                                value = if (restaurant.deliveryFee == 0.0) "Free" else "${Constants.CURRENCY_SYMBOL}${restaurant.deliveryFee}",
                                 label = "Delivery fee"
                             )
                         }
@@ -207,7 +212,7 @@ fun MenuItemCard(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "₹${"%.2f".format(item.price)}",
+                    text = "${Constants.CURRENCY_SYMBOL}${"%.2f".format(item.price)}",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = Primary
@@ -252,60 +257,3 @@ fun MenuItemCard(
 }
 
 // Sample restaurant details
-fun getSampleRestaurantDetails(id: String) = Restaurant(
-    id = id,
-    name = "Pizza Paradise",
-    description = "Authentic Italian pizzas with fresh ingredients",
-    imageUrl = "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800",
-    coverImageUrl = "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=1200",
-    cuisine = listOf("Italian", "Pizza", "Fast Food"),
-    rating = 4.5,
-    totalReviews = 230,
-    deliveryTime = 30,
-    deliveryFee = 0.0,
-    minOrderAmount = 100.0,
-    isOpen = true,
-    distance = 2.5,
-    latitude = 0.0,
-    longitude = 0.0,
-    address = "123 Main St",
-    tags = listOf("Featured", "30% OFF"),
-    categories = listOf(
-        MenuCategory(
-            id = "1",
-            name = "Pizzas",
-            items = listOf(
-                MenuItem(
-                    id = "1",
-                    name = "Margherita Pizza",
-                    description = "Classic pizza with tomato sauce, mozzarella, and fresh basil",
-                    price = 299.0,
-                    imageUrl = "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400",
-                    isVegetarian = true
-                ),
-                MenuItem(
-                    id = "2",
-                    name = "Pepperoni Pizza",
-                    description = "Loaded with pepperoni and mozzarella cheese",
-                    price = 399.0,
-                    imageUrl = "https://images.unsplash.com/photo-1628840042765-356cda07504e?w=400",
-                    isVegetarian = false
-                )
-            )
-        ),
-        MenuCategory(
-            id = "2",
-            name = "Sides",
-            items = listOf(
-                MenuItem(
-                    id = "3",
-                    name = "Garlic Bread",
-                    description = "Crispy bread with garlic butter and herbs",
-                    price = 99.0,
-                    imageUrl = "https://images.unsplash.com/photo-1573140401552-388e8e2940c9?w=400",
-                    isVegetarian = true
-                )
-            )
-        )
-    )
-)

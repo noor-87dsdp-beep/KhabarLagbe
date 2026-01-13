@@ -1,0 +1,113 @@
+<resources>
+    <!-- Bangladesh Districts -->
+    <string-array name="bangladesh_districts">
+        <item>Dhaka</item>
+        <item>Chittagong</item>
+        <item>Sylhet</item>
+        <item>Rajshahi</item>
+        <item>Khulna</item>
+        <item>Barisal</item>
+        <item>Rangpur</item>
+        <item>Mymensingh</item>
+        <item>Comilla</item>
+        <item>Gazipur</item>
+        <item>Narayanganj</item>
+        <item>Cox\'s Bazar</item>
+        <item>Jessore</item>
+        <item>Bogra</item>
+        <item>Dinajpur</item>
+    </string-array>
+    
+    <!-- Bangladesh Divisions -->
+    <string-array name="bangladesh_divisions">
+        <item>Dhaka</item>
+        <item>Chittagong</item>
+        <item>Sylhet</item>
+        <item>Rajshahi</item>
+        <item>Khulna</item>
+        <item>Barisal</item>
+        <item>Rangpur</item>
+        <item>Mymensingh</item>
+    </string-array>
+    
+    <!-- Dhaka Areas -->
+    <string-array name="dhaka_areas">
+        <item>Gulshan</item>
+        <item>Banani</item>
+        <item>Dhanmondi</item>
+        <item>Uttara</item>
+        <item>Mirpur</item>
+        <item>Mohammadpur</item>
+        <item>Bashundhara</item>
+        <item>Motijheel</item>
+        <item>Farmgate</item>
+        <item>Tejgaon</item>
+        <item>Badda</item>
+        <item>Rampura</item>
+        <item>Khilgaon</item>
+        <item>Jatrabari</item>
+        <item>Mohakhali</item>
+        <item>Lalmatia</item>
+        <item>New Market</item>
+    </string-array>
+    
+    <!-- Chittagong Areas -->
+    <string-array name="chittagong_areas">
+        <item>GEC Circle</item>
+        <item>Agrabad</item>
+        <item>Nasirabad</item>
+        <item>Khulshi</item>
+        <item>Panchlaish</item>
+        <item>Halishahar</item>
+    </string-array>
+    
+    <!-- Sylhet Areas -->
+    <string-array name="sylhet_areas">
+        <item>Zindabazar</item>
+        <item>Amberkhana</item>
+        <item>Bondor Bazar</item>
+        <item>Mira Bazar</item>
+    </string-array>
+    
+    <!-- Cuisine Categories -->
+    <string-array name="cuisine_categories">
+        <item>Bengali Traditional</item>
+        <item>Biriyani &amp; Tehari</item>
+        <item>Kacchi House</item>
+        <item>Chinese-Bangla</item>
+        <item>Thai-Bangla</item>
+        <item>Fast Food</item>
+        <item>Street Food</item>
+        <item>Mishti &amp; Sweets</item>
+        <item>Iftar Special</item>
+        <item>Breakfast</item>
+        <item>Healthy</item>
+        <item>Café &amp; Coffee</item>
+    </string-array>
+    
+    <!-- Payment Methods -->
+    <string-array name="payment_methods">
+        <item>bKash</item>
+        <item>Nagad</item>
+        <item>Rocket</item>
+        <item>Upay</item>
+        <item>Card Payment (SSL Commerz)</item>
+        <item>Cash on Delivery</item>
+    </string-array>
+    
+    <!-- Address Labels -->
+    <string-array name="address_labels">
+        <item>Home</item>
+        <item>Work</item>
+        <item>Other</item>
+    </string-array>
+    
+    <!-- Spice Levels -->
+    <string-array name="spice_levels">
+        <item>No Spice</item>
+        <item>Mild</item>
+        <item>Medium</item>
+        <item>Hot</item>
+        <item>Extra Hot</item>
+    </string-array>
+</resources>

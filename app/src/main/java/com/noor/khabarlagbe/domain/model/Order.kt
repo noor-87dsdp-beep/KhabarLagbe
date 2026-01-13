@@ -34,11 +34,14 @@ enum class OrderStatus {
 }
 
 enum class PaymentMethod {
-    CASH,
-    CREDIT_CARD,
-    DEBIT_CARD,
-    MOBILE_WALLET,
-    UPI
+    BKASH,              // Most popular in Bangladesh
+    NAGAD,              // 2nd most popular
+    ROCKET,             // Dutch Bangla Bank
+    UPAY,               // UCB Fintech
+    SSL_COMMERZ,        // Card payments gateway
+    CASH_ON_DELIVERY,   // Cash on delivery
+    CREDIT_CARD,        // Legacy - keep for compatibility
+    DEBIT_CARD          // Legacy - keep for compatibility
 }
 
 enum class PaymentStatus {

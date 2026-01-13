@@ -19,6 +19,7 @@ import coil.compose.AsyncImage
 import com.noor.khabarlagbe.domain.model.*
 import com.noor.khabarlagbe.navigation.Screen
 import com.noor.khabarlagbe.ui.theme.Primary
+import com.noor.khabarlagbe.util.Constants
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -116,7 +117,7 @@ fun CartScreen(
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = "₹${"%.2f".format(total)}",
+                                text = "${Constants.CURRENCY_SYMBOL}${"%.2f".format(total)}",
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold,
                                 color = Primary
@@ -166,7 +167,7 @@ fun CartItemCard(item: CartItem) {
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "₹${"%.2f".format(item.menuItem.price)}",
+                    text = "${Constants.CURRENCY_SYMBOL}${"%.2f".format(item.menuItem.price)}",
                     style = MaterialTheme.typography.bodyLarge,
                     color = Primary
                 )
@@ -223,7 +224,7 @@ fun PriceRow(label: String, amount: Double) {
             style = MaterialTheme.typography.bodyLarge
         )
         Text(
-            text = "₹${"%.2f".format(amount)}",
+            text = "${Constants.CURRENCY_SYMBOL}${"%.2f".format(amount)}",
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Medium
         )

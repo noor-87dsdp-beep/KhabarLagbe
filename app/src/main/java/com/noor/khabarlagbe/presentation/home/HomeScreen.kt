@@ -27,6 +27,8 @@ import coil.compose.AsyncImage
 import com.noor.khabarlagbe.domain.model.Restaurant
 import com.noor.khabarlagbe.navigation.Screen
 import com.noor.khabarlagbe.ui.theme.*
+import com.noor.khabarlagbe.util.Constants
+import com.noor.khabarlagbe.util.SampleData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,8 +51,8 @@ fun HomeScreen(
     //     is Error -> ShowErrorMessage()
     // }
     // Currently using sample data for UI demonstration
-    val restaurants = remember { getSampleRestaurants() }
-    val categories = listOf("All", "Pizza", "Burger", "Asian", "Healthy", "Dessert")
+    val restaurants = remember { SampleData.getBangladeshRestaurants() }
+    val categories = Constants.Cuisines.CATEGORIES
     
     Scaffold(
         topBar = {
@@ -582,13 +584,13 @@ fun RestaurantCard(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Delivery: ₹${restaurant.deliveryFee}",
+                        text = "Delivery: ${Constants.CURRENCY_SYMBOL}${restaurant.deliveryFee}",
                         style = MaterialTheme.typography.bodySmall,
                         color = if (restaurant.deliveryFee == 0.0) Success else TextSecondary,
                         fontWeight = if (restaurant.deliveryFee == 0.0) FontWeight.Bold else FontWeight.Normal
                     )
                     Text(
-                        text = "Min Order: ₹${restaurant.minOrderAmount}",
+                        text = "Min Order: ${Constants.CURRENCY_SYMBOL}${restaurant.minOrderAmount}",
                         style = MaterialTheme.typography.bodySmall,
                         color = TextSecondary
                     )
@@ -598,60 +600,3 @@ fun RestaurantCard(
     }
 }
 
-// Sample data
-fun getSampleRestaurants() = listOf(
-    Restaurant(
-        id = "1",
-        name = "Pizza Paradise",
-        description = "Authentic Italian pizzas with fresh ingredients",
-        imageUrl = "https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800",
-        cuisine = listOf("Italian", "Pizza", "Fast Food"),
-        rating = 4.5,
-        totalReviews = 230,
-        deliveryTime = 30,
-        deliveryFee = 0.0,
-        minOrderAmount = 100.0,
-        isOpen = true,
-        distance = 2.5,
-        latitude = 0.0,
-        longitude = 0.0,
-        address = "123 Main St",
-        tags = listOf("Featured", "30% OFF")
-    ),
-    Restaurant(
-        id = "2",
-        name = "Burger King",
-        description = "Flame-grilled burgers and fries",
-        imageUrl = "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800",
-        cuisine = listOf("American", "Burgers", "Fast Food"),
-        rating = 4.3,
-        totalReviews = 189,
-        deliveryTime = 25,
-        deliveryFee = 20.0,
-        minOrderAmount = 150.0,
-        isOpen = true,
-        distance = 1.8,
-        latitude = 0.0,
-        longitude = 0.0,
-        address = "456 Oak Ave",
-        tags = listOf("Popular")
-    ),
-    Restaurant(
-        id = "3",
-        name = "Sushi Master",
-        description = "Fresh sushi and Japanese cuisine",
-        imageUrl = "https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=800",
-        cuisine = listOf("Japanese", "Sushi", "Asian"),
-        rating = 4.7,
-        totalReviews = 312,
-        deliveryTime = 40,
-        deliveryFee = 30.0,
-        minOrderAmount = 200.0,
-        isOpen = true,
-        distance = 3.2,
-        latitude = 0.0,
-        longitude = 0.0,
-        address = "789 Elm St",
-        tags = listOf("Featured", "New")
-    )
-)
