@@ -76,9 +76,12 @@ dependencies {
     // Image Loading
     implementation(libs.coil.compose)
     
-    // Mapbox
-    implementation(libs.mapbox.maps.android)
-    implementation(libs.mapbox.maps.compose)
+    // Mapbox - commented out until MAPBOX_DOWNLOADS_TOKEN is configured
+    // For complete setup instructions, see: CI_CD_SETUP.md in repository root
+    // To enable: Set MAPBOX_DOWNLOADS_TOKEN in gradle.properties or environment
+    // Get token from https://account.mapbox.com/access-tokens/
+    // implementation(libs.mapbox.maps.android)
+    // implementation(libs.mapbox.maps.compose)
     
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)

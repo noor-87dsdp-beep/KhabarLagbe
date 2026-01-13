@@ -16,6 +16,23 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // Mapbox SDK repository
+        // Currently commented out since Mapbox dependencies are disabled
+        // For complete setup instructions, see: CI_CD_SETUP.md
+        // To enable: Set MAPBOX_DOWNLOADS_TOKEN and uncomment Mapbox dependencies
+        // maven {
+        //     url = uri("https://api.mapbox.com/downloads/v2/releases/maven")
+        //     credentials {
+        //         username = "mapbox"
+        //         password = providers.gradleProperty("MAPBOX_DOWNLOADS_TOKEN")
+        //             .orElse(providers.environmentVariable("MAPBOX_DOWNLOADS_TOKEN"))
+        //             .orElse("")
+        //             .get()
+        //     }
+        //     authentication {
+        //         create<BasicAuthentication>("basic")
+        //     }
+        // }
     }
 }
 

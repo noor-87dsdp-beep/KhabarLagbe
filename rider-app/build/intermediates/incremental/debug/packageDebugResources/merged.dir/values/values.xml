@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="accent">#FF9800</color>
+    <color name="background">#FFFFFF</color>
+    <color name="divider">#BDBDBD</color>
+    <color name="error">#D32F2F</color>
+    <color name="offline">#9E9E9E</color>
+    <color name="online">#4CAF50</color>
+    <color name="primary">#1976D2</color>
+    <color name="primary_dark">#0D47A1</color>
+    <color name="primary_light">#BBDEFB</color>
+    <color name="success">#388E3C</color>
+    <color name="surface">#F5F5F5</color>
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#757575</color>
+    <color name="warning">#F57C00</color>
+    <string name="accept">গ্রহণ করুন</string>
+    <string name="app_name">KhabarLagbe Rider</string>
+    <string name="arrived">পৌঁছেছি</string>
+    <string name="available_orders">উপলব্ধ অর্ডার</string>
+    <string name="cancel">বাতিল</string>
+    <string name="deliver">ডেলিভারি দিন</string>
+    <string name="delivered">ডেলিভারি সম্পন্ন</string>
+    <string name="deliveries">ডেলিভারি</string>
+    <string name="earnings">আয়</string>
+    <string name="enter_otp">OTP লিখুন</string>
+    <string name="error">ত্রুটি</string>
+    <string name="go_offline">অফলাইন</string>
+    <string name="go_online">অনলাইন</string>
+    <string name="home">হোম</string>
+    <string name="incentives">ইনসেন্টিভ</string>
+    <string name="loading">লোড হচ্ছে...</string>
+    <string name="login">লগইন</string>
+    <string name="no_orders">কোনো অর্ডার নেই</string>
+    <string name="phone_number">ফোন নম্বর</string>
+    <string name="picked_up">পিকআপ সম্পন্ন</string>
+    <string name="pickup">পিকআপ করুন</string>
+    <string name="profile">প্রোফাইল</string>
+    <string name="register">রেজিস্টার</string>
+    <string name="reject">বাতিল করুন</string>
+    <string name="save">সংরক্ষণ</string>
+    <string name="settings">সেটিংস</string>
+    <string name="success">সফল</string>
+    <string name="tips">টিপস</string>
+    <string name="todays_earnings">আজকের আয়</string>
+    <string name="total_earnings">মোট আয়</string>
+    <string name="verify">যাচাই করুন</string>
+    <style name="Theme.KhabarLagbe.Rider" parent="android:Theme.Material.Light.NoActionBar"/>
+</resources>

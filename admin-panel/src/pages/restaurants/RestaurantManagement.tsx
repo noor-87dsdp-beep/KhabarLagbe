@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { restaurantService, Restaurant } from '../../services/restaurantService';
 import toast from 'react-hot-toast';
-import { format } from 'date-fns';
 
 export default function RestaurantManagement() {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
