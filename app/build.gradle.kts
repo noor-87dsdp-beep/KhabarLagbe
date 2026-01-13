@@ -76,9 +76,10 @@ dependencies {
     // Image Loading
     implementation(libs.coil.compose)
     
-    // Mapbox
-    implementation(libs.mapbox.maps.android)
-    implementation(libs.mapbox.maps.compose)
+    // Mapbox - commented out until credentials are configured
+    // To enable: Add MAPBOX_DOWNLOADS_TOKEN to local.properties or environment
+    // implementation(libs.mapbox.maps.android)
+    // implementation(libs.mapbox.maps.compose)
     
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
@@ -92,13 +93,15 @@ dependencies {
     // DataStore
     implementation(libs.androidx.datastore.preferences)
     
-    // Firebase
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth.ktx)
-    implementation(libs.firebase.firestore.ktx)
-    implementation(libs.firebase.messaging.ktx)
-    implementation(libs.firebase.storage.ktx)
-    implementation(libs.firebase.analytics.ktx)
+    // Firebase - commented out until google-services.json is configured
+    // To enable: Download google-services.json from Firebase Console
+    // Place it in app/ directory and uncomment below
+    // implementation(platform(libs.firebase.bom))
+    // implementation(libs.firebase.auth.ktx)
+    // implementation(libs.firebase.firestore.ktx)
+    // implementation(libs.firebase.messaging.ktx)
+    // implementation(libs.firebase.storage.ktx)
+    // implementation(libs.firebase.analytics.ktx)
     
     // Socket.IO
     implementation(libs.socketio.client)
