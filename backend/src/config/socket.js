@@ -56,6 +56,45 @@ const setupSocket = (server) => {
     });
   });
 
+  // Restaurant namespace for order notifications
+  const restaurantNamespace = io.of('/restaurant');
+  
+  restaurantNamespace.on('connection', (socket) => {
+    console.log(`🍽️ Restaurant connected: ${socket.id}`);
+
+    // Subscribe to restaurant orders
+    socket.on('subscribe', (restaurantId) => {
+      socket.join(`restaurant:${restaurantId}`);
+      console.log(`👁️ Restaurant ${socket.id} subscribed to ${restaurantId}`);
+    });
+
+    socket.on('unsubscribe', (restaurantId) => {
+      socket.leave(`restaurant:${restaurantId}`);
+      console.log(`👋 Restaurant ${socket.id} unsubscribed from ${restaurantId}`);
+    });
+
+    socket.on('disconnect', () => {
+      console.log(`🍽️ Restaurant disconnected: ${socket.id}`);
+    });
+  });
+
+  // Admin namespace for live monitoring
+  const adminNamespace = io.of('/admin');
+  
+  adminNamespace.on('connection', (socket) => {
+    console.log(`👨‍💼 Admin connected: ${socket.id}`);
+
+    // Subscribe to all platform updates
+    socket.on('subscribe', (channel) => {
+      socket.join(channel);
+      console.log(`👁️ Admin ${socket.id} subscribed to ${channel}`);
+    });
+
+    socket.on('disconnect', () => {
+      console.log(`👨‍💼 Admin disconnected: ${socket.id}`);
+    });
+  });
+
   console.log('✅ Socket.IO configured');
   return io;
 };

@@ -169,7 +169,7 @@ exports.searchAll = async (req, res, next) => {
         { name: { $regex: searchQuery, $options: 'i' } },
         { nameBn: { $regex: searchQuery, $options: 'i' } },
         { description: { $regex: searchQuery, $options: 'i' } },
-        { category: { $regex: searchQuery, $options: 'i' } },
+        { categoryName: { $regex: searchQuery, $options: 'i' } },
       ],
     })
       .populate('restaurant', 'name logo rating')
@@ -184,5 +184,417 @@ exports.searchAll = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  }
+};
+
+// Restaurant self-service registration
+exports.registerRestaurant = async (req, res) => {
+  try {
+    const {
+      name,
+      nameBn,
+      phone,
+      email,
+      location,
+      address,
+      cuisines,
+      category,
+      deliveryRadius,
+      businessHours,
+      documents,
+      payoutMethod,
+    } = req.body;
+
+    if (!name || !phone || !location || !address) {
+      return res.status(400).json({
+        success: false,
+        message: 'Name, phone, location, and address are required',
+      });
+    }
+
+    const restaurant = new Restaurant({
+      name,
+      nameBn,
+      phone,
+      email,
+      location,
+      address,
+      cuisines,
+      category,
+      deliveryRadius,
+      businessHours,
+      documents,
+      payoutMethod,
+      approvalStatus: 'pending',
+    });
+
+    await restaurant.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Restaurant registered successfully. Awaiting approval.',
+      data: restaurant,
+    });
+  } catch (error) {
+    console.error('Error registering restaurant:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to register restaurant',
+      error: error.message,
+    });
+  }
+};
+
+// Update restaurant profile
+exports.updateProfile = async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findById(req.user.restaurantId);
+
+    if (!restaurant) {
+      return res.status(404).json({
+        success: false,
+        message: 'Restaurant not found',
+      });
+    }
+
+    const {
+      name,
+      nameBn,
+      description,
+      descriptionBn,
+      phone,
+      email,
+      cuisines,
+      category,
+      coverImage,
+      logo,
+      deliveryRadius,
+      minOrderAmount,
+      payoutMethod,
+    } = req.body;
+
+    if (name) restaurant.name = name;
+    if (nameBn) restaurant.nameBn = nameBn;
+    if (description) restaurant.description = description;
+    if (descriptionBn) restaurant.descriptionBn = descriptionBn;
+    if (phone) restaurant.phone = phone;
+    if (email) restaurant.email = email;
+    if (cuisines) restaurant.cuisines = cuisines;
+    if (category) restaurant.category = category;
+    if (coverImage) restaurant.coverImage = coverImage;
+    if (logo) restaurant.logo = logo;
+    if (deliveryRadius) restaurant.deliveryRadius = deliveryRadius;
+    if (minOrderAmount !== undefined) restaurant.minOrderAmount = minOrderAmount;
+    if (payoutMethod) restaurant.payoutMethod = payoutMethod;
+
+    await restaurant.save();
+
+    res.json({
+      success: true,
+      message: 'Profile updated successfully',
+      data: restaurant,
+    });
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update profile',
+      error: error.message,
+    });
+  }
+};
+
+// Update restaurant location
+exports.updateLocation = async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findById(req.user.restaurantId);
+
+    if (!restaurant) {
+      return res.status(404).json({
+        success: false,
+        message: 'Restaurant not found',
+      });
+    }
+
+    const { location, address } = req.body;
+
+    if (location) restaurant.location = location;
+    if (address) restaurant.address = address;
+
+    await restaurant.save();
+
+    res.json({
+      success: true,
+      message: 'Location updated successfully',
+      data: restaurant,
+    });
+  } catch (error) {
+    console.error('Error updating location:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update location',
+      error: error.message,
+    });
+  }
+};
+
+// Update business hours
+exports.updateBusinessHours = async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findById(req.user.restaurantId);
+
+    if (!restaurant) {
+      return res.status(404).json({
+        success: false,
+        message: 'Restaurant not found',
+      });
+    }
+
+    const { businessHours } = req.body;
+
+    if (businessHours) {
+      restaurant.businessHours = businessHours;
+      await restaurant.save();
+    }
+
+    res.json({
+      success: true,
+      message: 'Business hours updated successfully',
+      data: restaurant,
+    });
+  } catch (error) {
+    console.error('Error updating business hours:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to update business hours',
+      error: error.message,
+    });
+  }
+};
+
+// Toggle restaurant open/close status
+exports.toggleOpenStatus = async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findById(req.user.restaurantId);
+
+    if (!restaurant) {
+      return res.status(404).json({
+        success: false,
+        message: 'Restaurant not found',
+      });
+    }
+
+    restaurant.isOpen = !restaurant.isOpen;
+    await restaurant.save();
+
+    res.json({
+      success: true,
+      message: `Restaurant is now ${restaurant.isOpen ? 'open' : 'closed'}`,
+      data: { isOpen: restaurant.isOpen },
+    });
+  } catch (error) {
+    console.error('Error toggling status:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to toggle status',
+      error: error.message,
+    });
+  }
+};
+
+// Get restaurant analytics
+exports.getAnalytics = async (req, res) => {
+  try {
+    const Order = require('../models/Order');
+    const { period = 'today' } = req.query;
+
+    let startDate = new Date();
+    if (period === 'today') {
+      startDate.setHours(0, 0, 0, 0);
+    } else if (period === 'week') {
+      startDate.setDate(startDate.getDate() - 7);
+    } else if (period === 'month') {
+      startDate.setMonth(startDate.getMonth() - 1);
+    }
+
+    const orders = await Order.find({
+      restaurant: req.user.restaurantId,
+      createdAt: { $gte: startDate },
+    });
+
+    const totalOrders = orders.length;
+    const totalRevenue = orders.reduce((sum, order) => sum + (order.total - order.deliveryFee), 0);
+    const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+
+    res.json({
+      success: true,
+      data: {
+        totalOrders,
+        totalRevenue,
+        averageOrderValue,
+        period,
+      },
+    });
+  } catch (error) {
+    console.error('Error getting analytics:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get analytics',
+      error: error.message,
+    });
+  }
+};
+
+// Admin: Get all restaurants
+exports.getAllRestaurants = async (req, res) => {
+  try {
+    const { page = 1, limit = 20, status } = req.query;
+    const query = {};
+
+    if (status) {
+      query.approvalStatus = status;
+    }
+
+    const restaurants = await Restaurant.find(query)
+      .sort({ createdAt: -1 })
+      .limit(parseInt(limit))
+      .skip((parseInt(page) - 1) * parseInt(limit));
+
+    const total = await Restaurant.countDocuments(query);
+
+    res.json({
+      success: true,
+      data: {
+        restaurants,
+        pagination: {
+          page: parseInt(page),
+          limit: parseInt(limit),
+          total,
+          pages: Math.ceil(total / parseInt(limit)),
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Error getting restaurants:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get restaurants',
+      error: error.message,
+    });
+  }
+};
+
+// Admin: Get pending restaurants
+exports.getPendingRestaurants = async (req, res) => {
+  try {
+    const restaurants = await Restaurant.find({
+      approvalStatus: 'pending',
+    }).sort({ createdAt: -1 });
+
+    res.json({
+      success: true,
+      data: restaurants,
+    });
+  } catch (error) {
+    console.error('Error getting pending restaurants:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to get pending restaurants',
+      error: error.message,
+    });
+  }
+};
+
+// Admin: Approve restaurant
+exports.approveRestaurant = async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findById(req.params.id);
+
+    if (!restaurant) {
+      return res.status(404).json({
+        success: false,
+        message: 'Restaurant not found',
+      });
+    }
+
+    restaurant.approvalStatus = 'approved';
+    restaurant.isActive = true;
+    await restaurant.save();
+
+    res.json({
+      success: true,
+      message: 'Restaurant approved successfully',
+      data: restaurant,
+    });
+  } catch (error) {
+    console.error('Error approving restaurant:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to approve restaurant',
+      error: error.message,
+    });
+  }
+};
+
+// Admin: Reject restaurant
+exports.rejectRestaurant = async (req, res) => {
+  try {
+    const { reason } = req.body;
+    const restaurant = await Restaurant.findById(req.params.id);
+
+    if (!restaurant) {
+      return res.status(404).json({
+        success: false,
+        message: 'Restaurant not found',
+      });
+    }
+
+    restaurant.approvalStatus = 'rejected';
+    restaurant.rejectionReason = reason;
+    restaurant.isActive = false;
+    await restaurant.save();
+
+    res.json({
+      success: true,
+      message: 'Restaurant rejected',
+      data: restaurant,
+    });
+  } catch (error) {
+    console.error('Error rejecting restaurant:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to reject restaurant',
+      error: error.message,
+    });
+  }
+};
+
+// Admin: Suspend restaurant
+exports.suspendRestaurant = async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findById(req.params.id);
+
+    if (!restaurant) {
+      return res.status(404).json({
+        success: false,
+        message: 'Restaurant not found',
+      });
+    }
+
+    restaurant.isActive = !restaurant.isActive;
+    await restaurant.save();
+
+    res.json({
+      success: true,
+      message: `Restaurant ${restaurant.isActive ? 'activated' : 'suspended'}`,
+      data: restaurant,
+    });
+  } catch (error) {
+    console.error('Error suspending restaurant:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to suspend restaurant',
+      error: error.message,
+    });
   }
 };
