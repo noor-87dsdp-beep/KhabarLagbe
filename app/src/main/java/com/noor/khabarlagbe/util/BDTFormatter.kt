@@ -27,20 +27,6 @@ object BDTFormatter {
      */
     fun formatBangla(amount: Double): String {
         val formatted = decimalFormat.format(amount)
-        return "${Constants.CURRENCY_SYMBOL} ${toBanglaNumber(formatted)}"
-    }
-    
-    /**
-     * Converts English numerals to Bangla numerals
-     */
-    private fun toBanglaNumber(englishNumber: String): String {
-        val banglaDigits = mapOf(
-            '0' to '০', '1' to '১', '2' to '২', '3' to '৩', '4' to '৪',
-            '5' to '৫', '6' to '৬', '7' to '৭', '8' to '৮', '9' to '৯'
-        )
-        
-        return englishNumber.map { char ->
-            banglaDigits[char] ?: char
-        }.joinToString("")
+        return "${Constants.CURRENCY_SYMBOL} ${BanglaNumberConverter.toBangla(formatted)}"
     }
 }

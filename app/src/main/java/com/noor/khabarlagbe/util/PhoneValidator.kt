@@ -63,8 +63,13 @@ object PhoneValidator {
     
     /**
      * Converts phone to international format with country code
+     * Validates the phone number before conversion
      */
-    fun toInternationalFormat(phone: String): String {
+    fun toInternationalFormat(phone: String): String? {
+        if (!isValidBangladeshPhone(phone)) {
+            return null
+        }
+        
         val cleaned = phone.replace(Regex("[^0-9]"), "")
         return when {
             cleaned.startsWith("880") -> "+$cleaned"
