@@ -76,6 +76,10 @@ dependencies {
     // Image Loading
     implementation(libs.coil.compose)
     
+    // Mapbox
+    implementation(libs.mapbox.maps.android)
+    implementation(libs.mapbox.maps.compose)
+    
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.play.services)

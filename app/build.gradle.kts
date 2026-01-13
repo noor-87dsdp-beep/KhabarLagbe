@@ -76,10 +76,9 @@ dependencies {
     // Image Loading
     implementation(libs.coil.compose)
     
-    // Mapbox - commented out until credentials are configured
-    // To enable: Add MAPBOX_DOWNLOADS_TOKEN to local.properties or environment
-    // implementation(libs.mapbox.maps.android)
-    // implementation(libs.mapbox.maps.compose)
+    // Mapbox
+    implementation(libs.mapbox.maps.android)
+    implementation(libs.mapbox.maps.compose)
     
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
