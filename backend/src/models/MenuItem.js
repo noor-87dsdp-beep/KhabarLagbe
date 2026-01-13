@@ -15,9 +15,11 @@ const menuItemSchema = new mongoose.Schema({
   descriptionBn: String,
   image: String,
   category: {
-    type: String,
-    required: true, // 'Appetizer', 'Main Course', 'Dessert', 'Beverage'
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
+    required: true,
   },
+  categoryName: String, // Denormalized for quick access
   price: {
     type: Number,
     required: true, // in BDT paisa
