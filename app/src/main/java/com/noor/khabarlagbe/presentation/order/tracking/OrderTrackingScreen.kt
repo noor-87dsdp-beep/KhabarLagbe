@@ -175,7 +175,7 @@ fun OrderTrackingScreen(
 
 @Composable
 fun TimelineItem(event: OrderTimelineEvent) {
-    val dateFormat = remember { SimpleDateFormat("hh:mm a", Locale.getDefault()) }
+    val dateFormat = remember { SimpleDateFormat("hh:mm a", Locale.US) }
     
     Row(
         modifier = Modifier.fillMaxWidth()

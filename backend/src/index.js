@@ -59,7 +59,14 @@ app.use((req, res) => {
 
 // Error handler
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  // TODO: Use proper logging service (e.g., Winston, Sentry)
+  // For development only - don't expose stack traces in production
+  if (process.env.NODE_ENV === 'development') {
+    console.error(err.stack);
+  } else {
+    // Log error securely without exposing details
+    console.error('Error occurred:', err.message);
+  }
   res.status(500).json({ 
     success: false, 
     message: 'Internal server error' 

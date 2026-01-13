@@ -16,6 +16,9 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
     
+    // TODO: Make this configurable via BuildConfig
+    // For now using a placeholder. In production, use:
+    // BuildConfig.API_BASE_URL or environment-specific configuration
     private const val BASE_URL = "https://api.khabarlagbe.com/"
     
     @Provides

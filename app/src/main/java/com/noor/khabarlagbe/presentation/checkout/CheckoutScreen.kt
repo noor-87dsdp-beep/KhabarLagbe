@@ -104,7 +104,7 @@ fun CheckoutScreen(
                         )
                         Spacer(modifier = Modifier.height(16.dp))
                         
-                        PaymentMethod.entries.forEach { method ->
+                        PaymentMethod.values().forEach { method ->
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
