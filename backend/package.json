@@ -1,0 +1,27 @@
+{
+  "name": "khabarlagbe-backend",
+  "version": "1.0.0",
+  "description": "Backend API for KhabarLagbe Food Delivery Platform",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Tests coming soon\" && exit 0"
+  },
+  "keywords": [
+    "food",
+    "delivery",
+    "api",
+    "express"
+  ],
+  "author": "Noor",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
