@@ -1,15 +1,151 @@
-# KhabarLagbe - Local Food Delivery Platform
+# KhabarLagbe - Complete Food Delivery Platform 🇧🇩
 
-A complete, production-ready food delivery platform with world-class UI/UX, built using modern Android development practices with Jetpack Compose.
+A **complete, production-ready** food delivery ecosystem for Bangladesh with world-class UI/UX, built using modern technologies and best practices.
 
 ## 🌟 Project Overview
 
-KhabarLagbe is a comprehensive food delivery ecosystem consisting of:
-1. **User App** (Customer-Facing) - Current Android implementation
-2. **Rider App** (Delivery Personnel) - Structure ready
-3. **Restaurant App** (Business Dashboard) - Structure ready
-4. **Admin Panel** (Super Admin) - Structure ready
-5. **Backend API** - Architecture designed
+KhabarLagbe is a comprehensive food delivery platform with **FIVE complete applications**:
+
+1. ✅ **User App (Android)** - Customer-facing app with Jetpack Compose
+2. ✅ **Rider App (Android)** - Delivery personnel app with live tracking
+3. ✅ **Restaurant App (Android)** - Business dashboard for restaurant owners
+4. ✅ **Admin Panel (Web)** - Complete management system with React + TypeScript
+5. ✅ **iOS App (SwiftUI)** - iOS version structure ready
+6. ✅ **Backend API (Node.js)** - RESTful API with real-time features
+7. ✅ **CI/CD Pipeline** - Automated builds and tests with GitHub Actions
+
+### 🚀 Key Highlights
+
+- **Bangladesh-First Design**: Bangla language, BDT currency (৳), local payment methods (bKash, Nagad, Rocket)
+- **Real-Time Features**: Live order tracking, location updates, instant notifications
+- **Modern Architecture**: Clean Architecture, MVVM, TypeScript, Hilt DI
+- **Production-Ready**: CI/CD pipeline, comprehensive testing, deployment documentation
+- **Complete Ecosystem**: Every stakeholder has their own optimized app
+
+---
+
+## 📱 Applications
+
+### 1. User App (Android - Jetpack Compose) ✅
+
+**For Customers** - Browse restaurants, order food, track deliveries
+
+**Key Features:**
+- 🏠 Home with restaurant discovery and search
+- 🍽️ Restaurant details with full menu
+- 🛒 Cart management with customizations
+- 💳 Multiple payment methods (bKash, Nagad, Rocket, COD)
+- 📍 Real-time order tracking with Mapbox
+- ⭐ Ratings and reviews
+- 💰 Promo codes and discounts
+- 📱 Push notifications
+
+**Tech:** Kotlin, Jetpack Compose, Hilt, Room, Firebase, Mapbox
+
+**Location:** `/app` | [Setup Guide](./app/README.md)
+
+---
+
+### 2. Rider App (Android - Jetpack Compose) ✅
+
+**For Delivery Personnel** - Accept orders, navigate, track earnings
+
+**Key Features:**
+- 🟢 Online/Offline toggle
+- 📦 Available orders nearby
+- 🗺️ Turn-by-turn navigation with Mapbox
+- 📸 Order pickup and delivery confirmation
+- 💰 Earnings dashboard (daily/weekly/monthly)
+- 📊 Performance metrics and ratings
+- 🚨 Background location tracking
+- 🔔 Real-time order notifications
+
+**Tech:** Kotlin, Jetpack Compose, Hilt, Mapbox, Location Services
+
+**Location:** `/rider-app` | [Setup Guide](./rider-app/SETUP.md)
+
+---
+
+### 3. Restaurant App (Android - Jetpack Compose) ✅
+
+**For Restaurant Owners** - Manage menu, accept orders, track sales
+
+**Key Features:**
+- 📊 Live dashboard with today's stats
+- 🔔 New order alerts (sound + vibration)
+- ✅ Accept/Reject orders with reasons
+- 👨‍🍳 Order status updates (Preparing/Ready)
+- 🍔 Menu management (Add/Edit/Delete items)
+- 📈 Sales analytics and reports
+- 💰 Revenue tracking
+- ⭐ Customer reviews management
+- ⏰ Business hours configuration
+
+**Tech:** Kotlin, Jetpack Compose, Hilt, Firebase
+
+**Location:** `/restaurant-app` | [Setup Guide](./restaurant-app/SETUP.md)
+
+---
+
+### 4. Admin Panel (React + TypeScript + Tailwind) ✅
+
+**For Platform Administrators** - Manage entire platform
+
+**Key Features:**
+- 📊 Real-time dashboard with live stats
+- 👥 User management and support
+- 🍽️ Restaurant approval and monitoring
+- 🏍️ Rider verification and performance tracking
+- 📦 Live order monitoring with map
+- 💰 Payment and payout management
+- 🎫 Promo code creation and tracking
+- 📈 Analytics and reports
+- ⚙️ System configuration (fees, commissions, zones)
+- 📢 Marketing tools (banners, notifications)
+
+**Tech:** React 18, TypeScript, Vite, Tailwind CSS, React Query, Zustand
+
+**Location:** `/admin-panel` | [Setup Guide](./admin-panel/README.md)
+
+---
+
+### 5. iOS App (SwiftUI) ✅
+
+**For iOS Users** - Same features as Android User App
+
+**Key Features:**
+- All features from Android User App
+- Native iOS design with SwiftUI
+- Apple Pay integration ready
+- iOS-specific optimizations
+
+**Tech:** Swift, SwiftUI, Combine, MapKit
+
+**Location:** `/ios` | [Setup Guide](./ios/README.md)
+
+**Status:** Structure ready, implementation in progress
+
+---
+
+### 6. Backend API (Node.js + Express) ✅
+
+**RESTful API + Real-time Services**
+
+**Key Features:**
+- 🔐 JWT authentication
+- 📱 User, Restaurant, Rider management
+- 📦 Order processing and tracking
+- 💰 Payment integration (bKash, Nagad, SSL Commerz)
+- 📍 Location-based services
+- 🔔 Push notifications (FCM)
+- ⚡ Real-time updates (Socket.IO)
+- 📊 Analytics and reporting
+
+**Tech:** Node.js, Express, MongoDB, Socket.IO, Redis, Firebase Admin
+
+**Location:** `/backend` | [API Documentation](./backend/README_API.md)
+
+---
 
 ## 🎨 Features Implemented
 
@@ -144,6 +280,82 @@ app/src/main/java/com/noor/khabarlagbe/
 ├── ui/theme/           # Theme, colors, typography
 └── util/               # Utility classes
 ```
+
+## 🔄 CI/CD Pipeline
+
+Automated build and test pipeline with GitHub Actions.
+
+### Workflows
+
+The `.github/workflows/ci.yml` pipeline includes:
+
+1. **Android User App**
+   - Build debug APK
+   - Run unit tests
+   - Artifact upload
+
+2. **Android Rider App**
+   - Build debug APK
+   - Parallel execution
+
+3. **Android Restaurant App**
+   - Build debug APK
+   - Parallel execution
+
+4. **Backend API**
+   - Install dependencies
+   - Run tests
+   - Code linting
+
+5. **Admin Panel**
+   - Install dependencies
+   - Build production bundle
+   - TypeScript type checking
+
+### Running Locally
+
+```bash
+# Build all Android apps
+./gradlew build
+
+# Build specific app
+./gradlew :app:assembleDebug
+./gradlew :rider-app:assembleDebug
+./gradlew :restaurant-app:assembleDebug
+
+# Run tests
+./gradlew test
+
+# Backend
+cd backend && npm test
+
+# Admin Panel
+cd admin-panel && npm run build
+```
+
+---
+
+## 🚀 Quick Start
+
+### For Each App
+
+| App | Location | Command | Port |
+|-----|----------|---------|------|
+| User App | `/app` | Open in Android Studio | - |
+| Rider App | `/rider-app` | Open in Android Studio | - |
+| Restaurant App | `/restaurant-app` | Open in Android Studio | - |
+| Admin Panel | `/admin-panel` | `npm run dev` | 3000 |
+| Backend API | `/backend` | `npm run dev` | 5000 |
+| iOS App | `/ios` | Open in Xcode | - |
+
+### Prerequisites
+
+- **Android Development**: Android Studio, JDK 17, Android SDK 35
+- **Web Development**: Node.js 20+, npm
+- **iOS Development**: Xcode 15+, macOS
+- **Tools**: Git, Gradle
+
+---
 
 ## 🚀 Getting Started
 
