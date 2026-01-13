@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name">KhabarLagbe Restaurant</string>
+    
+    <!-- Auth -->
+    <string name="login">লগইন</string>
+    <string name="register">রেজিস্টার</string>
+    <string name="phone_number">ফোন নম্বর</string>
+    <string name="restaurant_name">রেস্টুরেন্টের নাম</string>
+    
+    <!-- Dashboard -->
+    <string name="dashboard">ড্যাশবোর্ড</string>
+    <string name="new_orders">নতুন অর্ডার</string>
+    <string name="preparing">প্রস্তুত হচ্ছে</string>
+    <string name="ready">প্রস্তুত</string>
+    <string name="completed">সম্পন্ন</string>
+    
+    <!-- Orders -->
+    <string name="accept_order">অর্ডার গ্রহণ</string>
+    <string name="reject_order">অর্ডার বাতিল</string>
+    <string name="mark_preparing">প্রস্তুত হচ্ছে</string>
+    <string name="mark_ready">প্রস্তুত</string>
+    <string name="order_details">অর্ডার বিস্তারিত</string>
+    
+    <!-- Menu -->
+    <string name="menu_management">মেনু ম্যানেজমেন্ট</string>
+    <string name="add_item">আইটেম যোগ করুন</string>
+    <string name="edit_item">আইটেম সম্পাদনা</string>
+    <string name="delete_item">আইটেম মুছুন</string>
+    <string name="item_name">আইটেমের নাম</string>
+    <string name="price">দাম</string>
+    <string name="description">বর্ণনা</string>
+    <string name="available">উপলব্ধ</string>
+    <string name="unavailable">অনুপলব্ধ</string>
+    
+    <!-- Analytics -->
+    <string name="analytics">বিশ্লেষণ</string>
+    <string name="total_sales">মোট বিক্রয়</string>
+    <string name="orders_today">আজকের অর্ডার</string>
+    <string name="revenue">আয়</string>
+    
+    <!-- Navigation -->
+    <string name="home">হোম</string>
+    <string name="orders">অর্ডার</string>
+    <string name="menu">মেনু</string>
+    <string name="profile">প্রোফাইল</string>
+    <string name="settings">সেটিংস</string>
+    
+    <!-- Common -->
+    <string name="cancel">বাতিল</string>
+    <string name="save">সংরক্ষণ</string>
+    <string name="loading">লোড হচ্ছে...</string>
+    <string name="error">ত্রুটি</string>
+    <string name="success">সফল</string>
+</resources>

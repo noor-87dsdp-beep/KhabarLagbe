@@ -1,0 +1,3 @@
+<resources>
+    <style name="Theme.KhabarLagbe.Restaurant" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>
