@@ -42,8 +42,12 @@ fun PaymentMethodScreen(
     var selectedMethod by remember { mutableStateOf<PaymentMethod?>(null) }
     var savePreference by remember { mutableStateOf(false) }
 
-    // Payment methods available in the app
-    // Note: UPAY from PaymentMethod enum is not included as it has lower market share
+    // Payment methods displayed in the app
+    // Note: Not all PaymentMethod enum values are shown in the UI
+    // UPAY and legacy card options are excluded for better UX:
+    // - UPAY has lower market adoption compared to bKash/Nagad/Rocket
+    // - CREDIT_CARD/DEBIT_CARD are consolidated under SSL_COMMERZ gateway
+    // The enum maintains all values for backend compatibility and future expansion
     val paymentMethods = listOf(
         PaymentMethodItem(
             method = PaymentMethod.BKASH,
