@@ -140,8 +140,8 @@ fun AddAddressScreen(
                 postalCode = postalCode,
                 landmark = landmark.ifBlank { null },
                 deliveryInstructions = deliveryInstructions.ifBlank { null },
-                latitude = 23.8103, // Default coordinates (Dhaka)
-                longitude = 90.4125,
+                latitude = Constants.DEFAULT_LATITUDE, // Placeholder coordinates (e.g., Dhaka) until map selection is implemented
+                longitude = Constants.DEFAULT_LONGITUDE,
                 isDefault = isDefault
             )
 
