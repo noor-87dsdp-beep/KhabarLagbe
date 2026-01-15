@@ -78,7 +78,7 @@ object ImageUploadHelper {
     /**
      * Convert Uri to File
      */
-    fun uriToFile(context: Context, uri: Uri, fileName: String = "temp_image.jpg"): File? {
+    fun uriToFile(context: Context, uri: Uri, fileName: String = "temp_image_${System.currentTimeMillis()}.jpg"): File? {
         return try {
             val inputStream = context.contentResolver.openInputStream(uri) ?: return null
             val file = File(context.cacheDir, fileName)

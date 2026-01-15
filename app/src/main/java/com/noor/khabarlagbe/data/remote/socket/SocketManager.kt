@@ -24,6 +24,10 @@ class SocketManager @Inject constructor() {
     
     companion object {
         private const val TAG = "SocketManager"
+        
+        // TODO: Move to BuildConfig or configuration file for different environments
+        // For production: "https://api.khabarlagbe.com"
+        // For staging: "https://staging-api.khabarlagbe.com"
         private const val BASE_URL = "http://localhost:3000"
         
         // Socket Events
