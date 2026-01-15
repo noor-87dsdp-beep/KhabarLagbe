@@ -127,8 +127,14 @@ object Constants {
     
     // VAT
     const val VAT_PERCENTAGE = 5.0 // 5% VAT in Bangladesh
+    const val TAX_RATE = 0.05 // 5% VAT as decimal
     
     // Delivery
     const val DEFAULT_DELIVERY_FEE = 30.0 // ৳30
     const val FREE_DELIVERY_THRESHOLD = 500.0 // Free delivery above ৳500
+    
+    // Validation
+    const val MIN_PASSWORD_LENGTH = 6
+    const val MIN_NAME_LENGTH = 2
+    const val BD_PHONE_PATTERN = "^(\\+?88)?01[3-9]\\d{8}$"
 }
