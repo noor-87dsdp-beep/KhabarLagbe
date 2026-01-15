@@ -127,7 +127,7 @@ class FcmService : android.app.Service() {
         // TODO: Replace ic_launcher_foreground with a dedicated notification icon
         // Create drawable/ic_notification.xml with proper sizing (24dp) and contrast
         val notification = NotificationCompat.Builder(context, CHANNEL_ORDER_UPDATES)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
