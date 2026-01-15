@@ -232,7 +232,7 @@ exports.deleteReview = async (req, res, next) => {
       });
     }
 
-    await review.remove();
+    await review.deleteOne();
 
     // Recalculate restaurant rating
     const restaurantReviews = await Review.find({ restaurant: review.restaurant });
