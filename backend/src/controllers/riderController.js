@@ -424,7 +424,7 @@ exports.getRiderStats = async (req, res, next) => {
     const todayEarnings = await Order.aggregate([
       {
         $match: {
-          riderId: mongoose.Types.ObjectId(req.user.riderId),
+          riderId: new mongoose.Types.ObjectId(req.user.riderId),
           status: 'delivered',
           deliveredAt: { $gte: today },
         },

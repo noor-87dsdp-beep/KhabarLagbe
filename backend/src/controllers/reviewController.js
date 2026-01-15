@@ -103,7 +103,7 @@ exports.getRestaurantReviews = async (req, res, next) => {
 
     // Get rating distribution
     const distribution = await Review.aggregate([
-      { $match: { restaurant: mongoose.Types.ObjectId(restaurantId), isPublished: true } },
+      { $match: { restaurant: new mongoose.Types.ObjectId(restaurantId), isPublished: true } },
       { $group: { _id: '$foodRating', count: { $sum: 1 } } },
       { $sort: { _id: -1 } },
     ]);
