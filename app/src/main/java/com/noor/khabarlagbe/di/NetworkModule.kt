@@ -1,5 +1,8 @@
 package com.noor.khabarlagbe.di
 
+import com.noor.khabarlagbe.data.remote.api.AuthApi
+import com.noor.khabarlagbe.data.remote.api.OrderApi
+import com.noor.khabarlagbe.data.remote.api.RestaurantApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -51,5 +54,23 @@ object NetworkModule {
     fun provideJson(): Json = Json {
         ignoreUnknownKeys = true
         coerceInputValues = true
+    }
+    
+    @Provides
+    @Singleton
+    fun provideAuthApi(retrofit: Retrofit): AuthApi {
+        return retrofit.create(AuthApi::class.java)
+    }
+    
+    @Provides
+    @Singleton
+    fun provideRestaurantApi(retrofit: Retrofit): RestaurantApi {
+        return retrofit.create(RestaurantApi::class.java)
+    }
+    
+    @Provides
+    @Singleton
+    fun provideOrderApi(retrofit: Retrofit): OrderApi {
+        return retrofit.create(OrderApi::class.java)
     }
 }
