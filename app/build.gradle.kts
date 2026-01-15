@@ -19,6 +19,15 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        
+        // Mapbox tokens from local.properties or environment variables
+        val mapboxPublicToken = providers.gradleProperty("MAPBOX_ACCESS_TOKEN")
+            .orElse(providers.environmentVariable("MAPBOX_ACCESS_TOKEN"))
+            .orElse("pk.mapbox_public_token_placeholder")
+            .get()
+        
+        buildConfigField("String", "MAPBOX_PUBLIC_TOKEN", "\"$mapboxPublicToken\"")
+        manifestPlaceholders["MAPBOX_ACCESS_TOKEN"] = mapboxPublicToken
     }
 
     buildTypes {
@@ -39,6 +48,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -76,12 +86,10 @@ dependencies {
     // Image Loading
     implementation(libs.coil.compose)
     
-    // Mapbox - commented out until MAPBOX_DOWNLOADS_TOKEN is configured
-    // For complete setup instructions, see: CI_CD_SETUP.md in repository root
-    // To enable: Set MAPBOX_DOWNLOADS_TOKEN in gradle.properties or environment
-    // Get token from https://account.mapbox.com/access-tokens/
-    // implementation(libs.mapbox.maps.android)
-    // implementation(libs.mapbox.maps.compose)
+    // Mapbox
+    implementation(libs.mapbox.maps.android)
+    implementation(libs.mapbox.maps.compose)
+    implementation(libs.mapbox.navigation.android)
     
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)

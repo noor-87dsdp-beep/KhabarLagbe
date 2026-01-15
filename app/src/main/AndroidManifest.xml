@@ -30,6 +30,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.KhabarLagbe">
+        
+        <!-- Mapbox Access Token -->
+        <meta-data
+            android:name="MAPBOX_ACCESS_TOKEN"
+            android:value="${MAPBOX_ACCESS_TOKEN}" />
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"
