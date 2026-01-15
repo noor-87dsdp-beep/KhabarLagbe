@@ -14,6 +14,7 @@ const paymentRoutes = require('./paymentRoutes');
 const reviewRoutes = require('./reviewRoutes');
 const promoCodeRoutes = require('./promoCodeRoutes');
 const adminRoutes = require('./adminRoutes');
+const uploadRoutes = require('./uploadRoutes');
 
 // Mount routes
 router.use('/auth', authRoutes);
@@ -28,6 +29,7 @@ router.use('/payments', paymentRoutes);
 router.use('/reviews', reviewRoutes);
 router.use('/promo-codes', promoCodeRoutes);
 router.use('/admin', adminRoutes);
+router.use('/upload', uploadRoutes);
 
 // API info endpoint
 router.get('/', (req, res) => {
@@ -48,6 +50,7 @@ router.get('/', (req, res) => {
       reviews: '/api/v1/reviews',
       promoCodes: '/api/v1/promo-codes',
       admin: '/api/v1/admin',
+      upload: '/api/v1/upload',
     },
     documentation: 'https://api.khabarlagbe.com/docs',
   });
