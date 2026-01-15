@@ -52,10 +52,17 @@ fun NavGraph(
             RegisterScreen(navController = navController)
         }
         
-        composable(Screen.OTP.route) {
-            // TODO: Pass phone number from previous screen via navigation arguments
+        composable(
+            route = Screen.OTP.route,
+            arguments = listOf(
+                navArgument("phoneNumber") {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val phoneNumber = backStackEntry.arguments?.getString("phoneNumber") ?: ""
             OTPVerificationScreen(
-                phoneNumber = "",
+                phoneNumber = phoneNumber,
                 navController = navController
             )
         }

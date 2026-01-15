@@ -5,7 +5,9 @@ sealed class Screen(val route: String) {
     data object Splash : Screen("splash")
     data object Login : Screen("login")
     data object Register : Screen("register")
-    data object OTP : Screen("otp")
+    data object OTP : Screen("otp/{phoneNumber}") {
+        fun createRoute(phoneNumber: String) = "otp/$phoneNumber"
+    }
     
     // Main
     data object Home : Screen("home")

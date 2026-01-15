@@ -19,6 +19,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.noor.khabarlagbe.domain.model.MenuItem
+import com.noor.khabarlagbe.domain.model.CustomizationType
+import com.noor.khabarlagbe.domain.model.CustomizationChoice
 import com.noor.khabarlagbe.presentation.components.QuantitySelector
 import com.noor.khabarlagbe.presentation.components.PrimaryButton
 import com.noor.khabarlagbe.ui.theme.Primary
@@ -45,38 +47,32 @@ fun MenuItemDetailSheet(
     onAddToCart: (
         item: MenuItem,
         quantity: Int,
-        size: String?,
-        addOns: List<String>,
-        spiceLevel: String?,
+        selectedCustomizations: Map<String, Set<String>>,
         specialInstructions: String?
     ) -> Unit
 ) {
     var quantity by remember { mutableStateOf(1) }
-    var selectedSize by remember { mutableStateOf<String?>(null) }
-    var selectedAddOns by remember { mutableStateOf(setOf<String>()) }
-    var selectedSpiceLevel by remember { mutableStateOf<String?>(null) }
+    // Store selected customization choices by option ID
+    var selectedCustomizations by remember { mutableStateOf<Map<String, Set<String>>>(emptyMap()) }
     var specialInstructions by remember { mutableStateOf("") }
 
-    // Price calculations
-    // TODO: Replace hardcoded values with MenuItem.customizations data when backend provides them
-    val sizePrice = when (selectedSize) {
-        "Small" -> 0.0
-        "Medium" -> 50.0
-        "Large" -> 100.0
-        else -> 0.0
-    }
-
-    val addOnsPrice = selectedAddOns.sumOf { addOn ->
-        when (addOn) {
-            "Extra Cheese" -> 30.0
-            "Extra Sauce" -> 20.0
-            "Extra Vegetables" -> 40.0
-            "Extra Meat" -> 80.0
-            else -> 0.0
+    // Fallback customization data for UI demo when menuItem.customizations is empty
+    // In production, this will use actual data from menuItem.customizations
+    val hasCustomizations = menuItem.customizations.isNotEmpty()
+    
+    // Price calculations based on actual customization data
+    val customizationsPrice = if (hasCustomizations) {
+        menuItem.customizations.sumOf { option ->
+            val selectedChoiceIds = selectedCustomizations[option.id] ?: emptySet()
+            option.options.filter { it.id in selectedChoiceIds }
+                .sumOf { it.additionalPrice }
         }
+    } else {
+        // Fallback pricing for demo when backend data isn't available
+        0.0
     }
 
-    val totalItemPrice = menuItem.price + sizePrice + addOnsPrice
+    val totalItemPrice = menuItem.price + customizationsPrice
     val totalPrice = totalItemPrice * quantity
 
     ModalBottomSheet(
@@ -152,151 +148,136 @@ fun MenuItemDetailSheet(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Size Selection
-            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                Text(
-                    text = "Size",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Column(modifier = Modifier.selectableGroup()) {
-                    listOf(
-                        "Small" to 0.0,
-                        "Medium" to 50.0,
-                        "Large" to 100.0
-                    ).forEach { (size, price) ->
+            // Customization Options from MenuItem data
+            if (hasCustomizations) {
+                menuItem.customizations.forEach { option ->
+                    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .selectable(
-                                    selected = selectedSize == size,
-                                    onClick = { selectedSize = size },
-                                    role = Role.RadioButton
-                                )
-                                .padding(vertical = 8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            RadioButton(
-                                selected = selectedSize == size,
-                                onClick = null
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = size,
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.weight(1f)
+                                text = option.name,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
                             )
-                            Text(
-                                text = if (price > 0) "+${Constants.CURRENCY_SYMBOL}$price" else "Base price",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                            if (option.isRequired) {
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    text = "*",
+                                    color = MaterialTheme.colorScheme.error,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
                         }
-                    }
-                }
-            }
+                        Spacer(modifier = Modifier.height(8.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Divider()
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Add-ons Section
-            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                Text(
-                    text = "Add-ons",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                listOf(
-                    "Extra Cheese" to 30.0,
-                    "Extra Sauce" to 20.0,
-                    "Extra Vegetables" to 40.0,
-                    "Extra Meat" to 80.0
-                ).forEach { (addOn, price) ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Checkbox(
-                            checked = selectedAddOns.contains(addOn),
-                            onCheckedChange = { checked ->
-                                selectedAddOns = if (checked) {
-                                    selectedAddOns + addOn
-                                } else {
-                                    selectedAddOns - addOn
+                        when (option.type) {
+                            CustomizationType.SINGLE_SELECT -> {
+                                // Radio buttons for single select
+                                Column(modifier = Modifier.selectableGroup()) {
+                                    option.options.forEach { choice ->
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .selectable(
+                                                    selected = selectedCustomizations[option.id]?.contains(choice.id) == true,
+                                                    onClick = {
+                                                        selectedCustomizations = selectedCustomizations.toMutableMap().apply {
+                                                            this[option.id] = setOf(choice.id)
+                                                        }
+                                                    },
+                                                    role = Role.RadioButton
+                                                )
+                                                .padding(vertical = 8.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            RadioButton(
+                                                selected = selectedCustomizations[option.id]?.contains(choice.id) == true,
+                                                onClick = null
+                                            )
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Text(
+                                                text = choice.name,
+                                                style = MaterialTheme.typography.bodyLarge,
+                                                modifier = Modifier.weight(1f)
+                                            )
+                                            if (choice.additionalPrice > 0) {
+                                                Text(
+                                                    text = "+${Constants.CURRENCY_SYMBOL}${choice.additionalPrice}",
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            }
+                                        }
+                                    }
                                 }
                             }
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = addOn,
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.weight(1f)
-                        )
-                        Text(
-                            text = "+${Constants.CURRENCY_SYMBOL}$price",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Divider()
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Spice Level
-            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                Text(
-                    text = "Spice Level",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Column(modifier = Modifier.selectableGroup()) {
-                    listOf("Mild", "Medium", "Spicy", "Extra Spicy").forEach { level ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .selectable(
-                                    selected = selectedSpiceLevel == level,
-                                    onClick = { selectedSpiceLevel = level },
-                                    role = Role.RadioButton
-                                )
-                                .padding(vertical = 8.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            RadioButton(
-                                selected = selectedSpiceLevel == level,
-                                onClick = null
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = level,
-                                style = MaterialTheme.typography.bodyLarge
-                            )
+                            CustomizationType.MULTIPLE_SELECT -> {
+                                // Checkboxes for multiple select
+                                option.options.forEach { choice ->
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Checkbox(
+                                            checked = selectedCustomizations[option.id]?.contains(choice.id) == true,
+                                            onCheckedChange = { checked ->
+                                                selectedCustomizations = selectedCustomizations.toMutableMap().apply {
+                                                    val current = this[option.id] ?: emptySet()
+                                                    this[option.id] = if (checked) {
+                                                        current + choice.id
+                                                    } else {
+                                                        current - choice.id
+                                                    }
+                                                }
+                                            }
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                            text = choice.name,
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                        if (choice.additionalPrice > 0) {
+                                            Text(
+                                                text = "+${Constants.CURRENCY_SYMBOL}${choice.additionalPrice}",
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Divider()
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
+            } else {
+                // Fallback UI for demo purposes when backend data isn't available
+                // Size Selection
+                Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                    Text(
+                        text = "Size (Demo - will use backend data)",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "Connect to backend to see actual customization options",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+                Divider()
+                Spacer(modifier = Modifier.height(16.dp))
             }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Divider()
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             // Special Instructions
             Column(modifier = Modifier.padding(horizontal = 16.dp)) {
@@ -369,9 +350,7 @@ fun MenuItemDetailSheet(
                     onAddToCart(
                         menuItem,
                         quantity,
-                        selectedSize,
-                        selectedAddOns.toList(),
-                        selectedSpiceLevel,
+                        selectedCustomizations,
                         specialInstructions.ifBlank { null }
                     )
                     onDismiss()
