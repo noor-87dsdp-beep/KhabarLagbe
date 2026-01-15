@@ -5,6 +5,7 @@ sealed class Screen(val route: String) {
     data object Splash : Screen("splash")
     data object Login : Screen("login")
     data object Register : Screen("register")
+    data object OTP : Screen("otp")
     
     // Main
     data object Home : Screen("home")
@@ -17,8 +18,13 @@ sealed class Screen(val route: String) {
         fun createRoute(restaurantId: String) = "restaurant/$restaurantId"
     }
     
+    data object MenuItemDetail : Screen("menu_item/{itemId}") {
+        fun createRoute(itemId: String) = "menu_item/$itemId"
+    }
+    
     // Checkout
     data object Checkout : Screen("checkout")
+    data object AddressSelection : Screen("address_selection")
     data object PaymentMethod : Screen("payment_method")
     data object AddAddress : Screen("add_address")
     

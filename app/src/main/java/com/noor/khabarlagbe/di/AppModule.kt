@@ -1,5 +1,6 @@
 package com.noor.khabarlagbe.di
 
+import com.noor.khabarlagbe.data.remote.socket.SocketManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,6 +28,12 @@ object AppModule {
     @Singleton
     @DefaultDispatcher
     fun provideDefaultDispatcher(): CoroutineDispatcher = Dispatchers.Default
+    
+    @Provides
+    @Singleton
+    fun provideSocketManager(): SocketManager {
+        return SocketManager()
+    }
 }
 
 @Qualifier
