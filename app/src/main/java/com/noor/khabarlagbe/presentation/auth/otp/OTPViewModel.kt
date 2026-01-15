@@ -57,25 +57,19 @@ class OTPViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.value = OTPUiState.Loading
-            try {
-                authRepository.verifyOtp(phoneNumber, otp)
-                    .onSuccess { isValid ->
-                        if (isValid) {
-                            _uiState.value = OTPUiState.Success
-                        } else {
-                            _uiState.value = OTPUiState.Error("Invalid OTP. Please try again.")
-                        }
+            authRepository.verifyOtp(phoneNumber, otp)
+                .onSuccess { isValid ->
+                    if (isValid) {
+                        _uiState.value = OTPUiState.Success
+                    } else {
+                        _uiState.value = OTPUiState.Error("Invalid OTP. Please try again.")
                     }
-                    .onFailure { error ->
-                        _uiState.value = OTPUiState.Error(
-                            error.message ?: "OTP verification failed. Please try again."
-                        )
-                    }
-            } catch (e: Exception) {
-                _uiState.value = OTPUiState.Error(
-                    e.message ?: "An error occurred. Please try again."
-                )
-            }
+                }
+                .onFailure { error ->
+                    _uiState.value = OTPUiState.Error(
+                        error.message ?: "OTP verification failed. Please try again."
+                    )
+                }
         }
     }
 
@@ -94,22 +88,16 @@ class OTPViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.value = OTPUiState.Loading
-            try {
-                authRepository.sendOtp(phoneNumber)
-                    .onSuccess {
-                        _uiState.value = OTPUiState.OtpResent
-                        startCountdown()
-                    }
-                    .onFailure { error ->
-                        _uiState.value = OTPUiState.Error(
-                            error.message ?: "Failed to resend OTP. Please try again."
-                        )
-                    }
-            } catch (e: Exception) {
-                _uiState.value = OTPUiState.Error(
-                    e.message ?: "An error occurred. Please try again."
-                )
-            }
+            authRepository.sendOtp(phoneNumber)
+                .onSuccess {
+                    _uiState.value = OTPUiState.OtpResent
+                    startCountdown()
+                }
+                .onFailure { error ->
+                    _uiState.value = OTPUiState.Error(
+                        error.message ?: "Failed to resend OTP. Please try again."
+                    )
+                }
         }
     }
 

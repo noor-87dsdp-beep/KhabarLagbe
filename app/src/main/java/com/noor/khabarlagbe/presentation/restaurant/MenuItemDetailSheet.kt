@@ -58,6 +58,7 @@ fun MenuItemDetailSheet(
     var specialInstructions by remember { mutableStateOf("") }
 
     // Price calculations
+    // TODO: Replace hardcoded values with MenuItem.customizations data when backend provides them
     val sizePrice = when (selectedSize) {
         "Small" -> 0.0
         "Medium" -> 50.0

@@ -126,26 +126,31 @@ fun AddAddressScreen(
 
         isSaving = true
 
-        // Create address object
-        val address = Address(
-            id = System.currentTimeMillis().toString(),
-            label = selectedLabel,
-            houseNo = houseNo,
-            roadNo = roadNo,
-            area = area,
-            thana = thana,
-            district = district,
-            division = division,
-            postalCode = postalCode,
-            landmark = landmark.ifBlank { null },
-            deliveryInstructions = deliveryInstructions.ifBlank { null },
-            latitude = 23.8103, // Default coordinates (Dhaka)
-            longitude = 90.4125,
-            isDefault = isDefault
-        )
+        try {
+            // Create address object
+            val address = Address(
+                id = System.currentTimeMillis().toString(),
+                label = selectedLabel,
+                houseNo = houseNo,
+                roadNo = roadNo,
+                area = area,
+                thana = thana,
+                district = district,
+                division = division,
+                postalCode = postalCode,
+                landmark = landmark.ifBlank { null },
+                deliveryInstructions = deliveryInstructions.ifBlank { null },
+                latitude = 23.8103, // Default coordinates (Dhaka)
+                longitude = 90.4125,
+                isDefault = isDefault
+            )
 
-        onAddressSaved(address)
-        navController.navigateUp()
+            onAddressSaved(address)
+            navController.navigateUp()
+        } catch (e: Exception) {
+            // Handle any errors during address creation
+            isSaving = false
+        }
     }
 
     Scaffold(

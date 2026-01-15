@@ -286,7 +286,7 @@ private fun OTPInputField(
             color = if (isError) Error else MaterialTheme.colorScheme.onSurface
         ),
         keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.NumberPassword,
+            keyboardType = KeyboardType.Number,
             imeAction = imeAction
         ),
         keyboardActions = keyboardActions,

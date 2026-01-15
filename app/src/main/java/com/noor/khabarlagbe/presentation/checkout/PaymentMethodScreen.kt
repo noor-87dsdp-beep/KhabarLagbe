@@ -42,6 +42,8 @@ fun PaymentMethodScreen(
     var selectedMethod by remember { mutableStateOf<PaymentMethod?>(null) }
     var savePreference by remember { mutableStateOf(false) }
 
+    // Payment methods available in the app
+    // Note: UPAY from PaymentMethod enum is not included as it has lower market share
     val paymentMethods = listOf(
         PaymentMethodItem(
             method = PaymentMethod.BKASH,
