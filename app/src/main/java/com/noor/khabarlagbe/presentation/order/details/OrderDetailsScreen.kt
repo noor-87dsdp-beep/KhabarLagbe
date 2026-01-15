@@ -358,7 +358,7 @@ private fun OrderItemsCard(order: Order) {
                 OrderItemRow(item = item)
                 if (item != order.items.last()) {
                     Spacer(modifier = Modifier.height(8.dp))
-                    Divider()
+                    HorizontalDivider()
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
@@ -445,7 +445,7 @@ private fun PriceBreakdownCard(order: Order) {
             }
             
             Spacer(modifier = Modifier.height(8.dp))
-            Divider()
+            HorizontalDivider()
             Spacer(modifier = Modifier.height(8.dp))
             
             Row(

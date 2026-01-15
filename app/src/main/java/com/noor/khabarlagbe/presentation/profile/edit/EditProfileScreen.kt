@@ -351,7 +351,7 @@ private fun ImagePickerBottomSheet(
                 )
             }
             
-            Divider()
+            HorizontalDivider()
             
             Row(
                 modifier = Modifier
