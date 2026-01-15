@@ -140,6 +140,10 @@ fun getPermissionDeniedText(permission: String): String {
         Manifest.permission.POST_NOTIFICATIONS -> {
             "নোটিফিকেশনের অনুমতি প্রত্যাখ্যান করা হয়েছে। অনুগ্রহ করে সেটিংস থেকে অনুমতি দিন।"
         }
+        Manifest.permission.READ_MEDIA_IMAGES,
+        Manifest.permission.READ_EXTERNAL_STORAGE -> {
+            "মিডিয়া অনুমতি প্রত্যাখ্যান করা হয়েছে। অনুগ্রহ করে সেটিংস থেকে অনুমতি দিন।"
+        }
         else -> "অনুমতি প্রত্যাখ্যান করা হয়েছে। সেটিংস থেকে অনুমতি দিন।"
     }
 }
