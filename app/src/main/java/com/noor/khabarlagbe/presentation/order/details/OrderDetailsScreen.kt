@@ -30,6 +30,7 @@ import java.util.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrderDetailsScreen(
+    orderId: String,
     navController: NavController,
     viewModel: OrderDetailsViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
