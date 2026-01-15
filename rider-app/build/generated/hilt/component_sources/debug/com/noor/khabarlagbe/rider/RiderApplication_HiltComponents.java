@@ -1,6 +1,12 @@
 package com.noor.khabarlagbe.rider;
 
 import com.noor.khabarlagbe.rider.di.NetworkModule;
+import com.noor.khabarlagbe.rider.presentation.auth.RiderAuthViewModel_HiltModules;
+import com.noor.khabarlagbe.rider.presentation.delivery.ActiveDeliveryViewModel_HiltModules;
+import com.noor.khabarlagbe.rider.presentation.earnings.EarningsViewModel_HiltModules;
+import com.noor.khabarlagbe.rider.presentation.home.RiderHomeViewModel_HiltModules;
+import com.noor.khabarlagbe.rider.presentation.orders.AvailableOrdersViewModel_HiltModules;
+import com.noor.khabarlagbe.rider.presentation.profile.RiderProfileViewModel_HiltModules;
 import dagger.Binds;
 import dagger.Component;
 import dagger.Module;
@@ -152,10 +158,16 @@ public final class RiderApplication_HiltComponents {
 
   @Subcomponent(
       modules = {
+          ActiveDeliveryViewModel_HiltModules.KeyModule.class,
+          AvailableOrdersViewModel_HiltModules.KeyModule.class,
+          EarningsViewModel_HiltModules.KeyModule.class,
           HiltWrapper_ActivityRetainedComponentManager_LifecycleModule.class,
           HiltWrapper_SavedStateHandleModule.class,
           ActivityCBuilderModule.class,
-          ViewModelCBuilderModule.class
+          ViewModelCBuilderModule.class,
+          RiderAuthViewModel_HiltModules.KeyModule.class,
+          RiderHomeViewModel_HiltModules.KeyModule.class,
+          RiderProfileViewModel_HiltModules.KeyModule.class
       }
   )
   @ActivityRetainedScoped
@@ -190,7 +202,15 @@ public final class RiderApplication_HiltComponents {
   }
 
   @Subcomponent(
-      modules = HiltWrapper_HiltViewModelFactory_ViewModelModule.class
+      modules = {
+          ActiveDeliveryViewModel_HiltModules.BindsModule.class,
+          AvailableOrdersViewModel_HiltModules.BindsModule.class,
+          EarningsViewModel_HiltModules.BindsModule.class,
+          HiltWrapper_HiltViewModelFactory_ViewModelModule.class,
+          RiderAuthViewModel_HiltModules.BindsModule.class,
+          RiderHomeViewModel_HiltModules.BindsModule.class,
+          RiderProfileViewModel_HiltModules.BindsModule.class
+      }
   )
   @ViewModelScoped
   public abstract static class ViewModelC implements ViewModelComponent,

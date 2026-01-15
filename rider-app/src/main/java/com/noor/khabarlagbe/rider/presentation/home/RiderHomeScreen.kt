@@ -16,14 +16,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.noor.khabarlagbe.rider.navigation.RiderScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RiderHomeScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: RiderHomeViewModel = hiltViewModel()
 ) {
-    var isOnline by remember { mutableStateOf(false) }
+    val uiState by viewModel.uiState.collectAsState()
+    val rider by viewModel.rider.collectAsState()
+    val isOnline by viewModel.isOnline.collectAsState()
+    val availableOrders by viewModel.availableOrders.collectAsState()
+    val activeOrder by viewModel.activeOrder.collectAsState()
+    
+    val isRefreshing = uiState is HomeUiState.Loading
     
     Scaffold(
         topBar = {
@@ -33,7 +42,7 @@ fun RiderHomeScreen(
                     IconButton(onClick = { /* Navigate to notifications */ }) {
                         Icon(Icons.Default.Notifications, contentDescription = "Notifications")
                     }
-                    IconButton(onClick = { /* Navigate to profile */ }) {
+                    IconButton(onClick = { navController.navigate(RiderScreen.Profile.route) }) {
                         Icon(Icons.Default.Person, contentDescription = "Profile")
                     }
                 }
@@ -49,13 +58,19 @@ fun RiderHomeScreen(
                 )
                 NavigationBarItem(
                     selected = false,
-                    onClick = { /* Navigate to earnings */ },
+                    onClick = { navController.navigate(RiderScreen.Earnings.route) },
                     icon = { Icon(Icons.Default.AccountBalanceWallet, contentDescription = "Earnings") },
                     label = { Text("আয়") }
                 )
                 NavigationBarItem(
                     selected = false,
-                    onClick = { /* Navigate to profile */ },
+                    onClick = { navController.navigate(RiderScreen.History.route) },
+                    icon = { Icon(Icons.Default.History, contentDescription = "History") },
+                    label = { Text("ইতিহাস") }
+                )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { navController.navigate(RiderScreen.Profile.route) },
                     icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
                     label = { Text("প্রোফাইল") }
                 )
@@ -69,48 +84,157 @@ fun RiderHomeScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Online/Offline Toggle
-            item {
-                OnlineToggleCard(
-                    isOnline = isOnline,
-                    onToggle = { isOnline = it }
-                )
-            }
-            
-            // Today's Stats
-            item {
-                TodayStatsCard()
-            }
-            
-            // Available Orders
-            item {
-                Text(
-                    text = if (isOnline) "উপলব্ধ অর্ডার" else "অনলাইন হয়ে অর্ডার দেখুন",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            
-            if (isOnline) {
-                items(5) { index ->
-                    AvailableOrderCard(
-                        orderNumber = "#${1234 + index}",
-                        restaurantName = "রেস্টুরেন্ট ${index + 1}",
-                        distance = "২.৫ কিমি",
-                        earnings = "৳৬৫",
-                        onAccept = { /* Handle accept */ },
-                        onReject = { /* Handle reject */ }
+                // Online/Offline Toggle
+                item {
+                    OnlineToggleCard(
+                        isOnline = isOnline,
+                        onToggle = { viewModel.toggleOnlineStatus() }
                     )
                 }
+                
+                // Today's Stats
+                item {
+                    TodayStatsCard(
+                        todayEarnings = rider?.todayEarnings ?: 0.0,
+                        totalDeliveries = rider?.totalDeliveries ?: 0,
+                        rating = rider?.rating ?: 0.0
+                    )
+                }
+                
+                // Active Order
+                if (activeOrder != null) {
+                    item {
+                        Text(
+                            text = "সক্রিয় ডেলিভারি",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                    item {
+                        ActiveOrderCard(
+                            order = activeOrder!!,
+                            onClick = {
+                                navController.navigate(RiderScreen.ActiveDelivery.createRoute(activeOrder!!.id))
+                            }
+                        )
+                    }
+                }
+                
+                // Available Orders
+                if (isOnline) {
+                    item {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "উপলব্ধ অর্ডার",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            if (availableOrders.isNotEmpty()) {
+                                TextButton(onClick = { navController.navigate(RiderScreen.AvailableOrders.route) }) {
+                                    Text("সব দেখুন")
+                                }
+                            }
+                        }
+                    }
+                    
+                    if (availableOrders.isEmpty()) {
+                        item {
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+                                )
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(32.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        Icon(
+                                            Icons.Default.Inbox,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(48.dp),
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                        Text(
+                                            text = "কোন অর্ডার নেই",
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                        Text(
+                                            text = "নতুন অর্ডার পেলে জানানো হবে",
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        items(availableOrders.take(3)) { order ->
+                            AvailableOrderCard(
+                                orderNumber = "#${order.id.takeLast(6)}",
+                                restaurantName = order.restaurantName,
+                                distance = "${String.format("%.1f", order.distance)} কিমি",
+                                earnings = "৳${order.deliveryFee.toInt()}",
+                                onAccept = { viewModel.acceptOrder(order.id) },
+                                onReject = { viewModel.rejectOrder(order.id) }
+                            )
+                        }
+                    }
+                } else {
+                    item {
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.errorContainer
+                            )
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(24.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "অনলাইন হয়ে অর্ডার দেখুন",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.onErrorContainer
+                                )
+                            }
+                        }
+                    }
+                }
+                
+                // Quick Actions
+                item {
+                    Text(
+                        text = "দ্রুত অ্যাক্সেস",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                item {
+                    QuickActionsGrid(navController)
+                }
             }
-        }
     }
 }
 
 @Composable
 fun OnlineToggleCard(
     isOnline: Boolean,
-    onToggle: (Boolean) -> Unit
+    onToggle: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -138,7 +262,7 @@ fun OnlineToggleCard(
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(
-                onClick = { onToggle(!isOnline) },
+                onClick = onToggle,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.White,
                     contentColor = if (isOnline) Color(0xFF4CAF50) else Color(0xFF9E9E9E)
@@ -154,7 +278,11 @@ fun OnlineToggleCard(
 }
 
 @Composable
-fun TodayStatsCard() {
+fun TodayStatsCard(
+    todayEarnings: Double,
+    totalDeliveries: Int,
+    rating: Double
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp)
@@ -172,9 +300,9 @@ fun TodayStatsCard() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                StatItem(label = "আয়", value = "৳১,২৫০", icon = Icons.Default.AttachMoney)
-                StatItem(label = "ডেলিভারি", value = "৮", icon = Icons.Default.LocalShipping)
-                StatItem(label = "রেটিং", value = "৪.৮", icon = Icons.Default.Star)
+                StatItem(label = "আয়", value = "৳${todayEarnings.toInt()}", icon = Icons.Default.AttachMoney)
+                StatItem(label = "ডেলিভারি", value = "$totalDeliveries", icon = Icons.Default.LocalShipping)
+                StatItem(label = "রেটিং", value = String.format("%.1f", rating), icon = Icons.Default.Star)
             }
         }
     }
@@ -205,6 +333,57 @@ fun StatItem(
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
+    }
+}
+
+@Composable
+fun ActiveOrderCard(
+    order: com.noor.khabarlagbe.rider.domain.model.RiderOrder,
+    onClick: () -> Unit
+) {
+    Card(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        )
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "অর্ডার #${order.id.takeLast(6)}",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Surface(
+                    color = Color(0xFF4CAF50),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "৳${order.deliveryFee.toInt()}",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                    )
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = "${order.restaurantName} → ${order.customerName}",
+                style = MaterialTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Button(
+                onClick = onClick,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("বিস্তারিত দেখুন")
+            }
+        }
     }
 }
 
@@ -297,6 +476,60 @@ fun AvailableOrderCard(
                     Text("গ্রহণ করুন")
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun QuickActionsGrid(navController: NavController) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        QuickActionCard(
+            icon = Icons.Default.Assessment,
+            title = "পরিসংখ্যান",
+            onClick = { navController.navigate(RiderScreen.Stats.route) },
+            modifier = Modifier.weight(1f)
+        )
+        QuickActionCard(
+            icon = Icons.Default.AccountBalanceWallet,
+            title = "আয়",
+            onClick = { navController.navigate(RiderScreen.Earnings.route) },
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@Composable
+fun QuickActionCard(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    title: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        onClick = onClick,
+        modifier = modifier
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Icon(
+                icon,
+                contentDescription = null,
+                modifier = Modifier.size(32.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium
+            )
         }
     }
 }

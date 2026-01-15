@@ -1,5 +1,8 @@
 package com.noor.khabarlagbe.rider.di
 
+import com.noor.khabarlagbe.rider.data.remote.api.RiderApi
+import com.noor.khabarlagbe.rider.data.repository.*
+import com.noor.khabarlagbe.rider.domain.repository.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,5 +41,47 @@ object NetworkModule {
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+    
+    @Provides
+    @Singleton
+    fun provideRiderApi(retrofit: Retrofit): RiderApi {
+        return retrofit.create(RiderApi::class.java)
+    }
+    
+    @Provides
+    @Singleton
+    fun provideRiderAuthRepository(api: RiderApi): RiderAuthRepository {
+        return RiderAuthRepositoryImpl(api)
+    }
+    
+    @Provides
+    @Singleton
+    fun provideRiderOrderRepository(api: RiderApi): RiderOrderRepository {
+        return RiderOrderRepositoryImpl(api)
+    }
+    
+    @Provides
+    @Singleton
+    fun provideRiderEarningsRepository(api: RiderApi): RiderEarningsRepository {
+        return RiderEarningsRepositoryImpl(api)
+    }
+    
+    @Provides
+    @Singleton
+    fun provideRiderProfileRepository(api: RiderApi): RiderProfileRepository {
+        return RiderProfileRepositoryImpl(api)
+    }
+    
+    @Provides
+    @Singleton
+    fun provideRiderHistoryRepository(api: RiderApi): RiderHistoryRepository {
+        return RiderHistoryRepositoryImpl(api)
+    }
+    
+    @Provides
+    @Singleton
+    fun provideLocationRepository(api: RiderApi): LocationRepository {
+        return LocationRepositoryImpl(api)
     }
 }

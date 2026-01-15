@@ -8,6 +8,32 @@ import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.noor.khabarlagbe.rider.data.remote.api.RiderApi;
+import com.noor.khabarlagbe.rider.di.NetworkModule_ProvideLocationRepositoryFactory;
+import com.noor.khabarlagbe.rider.di.NetworkModule_ProvideOkHttpClientFactory;
+import com.noor.khabarlagbe.rider.di.NetworkModule_ProvideRetrofitFactory;
+import com.noor.khabarlagbe.rider.di.NetworkModule_ProvideRiderApiFactory;
+import com.noor.khabarlagbe.rider.di.NetworkModule_ProvideRiderAuthRepositoryFactory;
+import com.noor.khabarlagbe.rider.di.NetworkModule_ProvideRiderEarningsRepositoryFactory;
+import com.noor.khabarlagbe.rider.di.NetworkModule_ProvideRiderOrderRepositoryFactory;
+import com.noor.khabarlagbe.rider.di.NetworkModule_ProvideRiderProfileRepositoryFactory;
+import com.noor.khabarlagbe.rider.domain.repository.LocationRepository;
+import com.noor.khabarlagbe.rider.domain.repository.RiderAuthRepository;
+import com.noor.khabarlagbe.rider.domain.repository.RiderEarningsRepository;
+import com.noor.khabarlagbe.rider.domain.repository.RiderOrderRepository;
+import com.noor.khabarlagbe.rider.domain.repository.RiderProfileRepository;
+import com.noor.khabarlagbe.rider.presentation.auth.RiderAuthViewModel;
+import com.noor.khabarlagbe.rider.presentation.auth.RiderAuthViewModel_HiltModules;
+import com.noor.khabarlagbe.rider.presentation.delivery.ActiveDeliveryViewModel;
+import com.noor.khabarlagbe.rider.presentation.delivery.ActiveDeliveryViewModel_HiltModules;
+import com.noor.khabarlagbe.rider.presentation.earnings.EarningsViewModel;
+import com.noor.khabarlagbe.rider.presentation.earnings.EarningsViewModel_HiltModules;
+import com.noor.khabarlagbe.rider.presentation.home.RiderHomeViewModel;
+import com.noor.khabarlagbe.rider.presentation.home.RiderHomeViewModel_HiltModules;
+import com.noor.khabarlagbe.rider.presentation.orders.AvailableOrdersViewModel;
+import com.noor.khabarlagbe.rider.presentation.orders.AvailableOrdersViewModel_HiltModules;
+import com.noor.khabarlagbe.rider.presentation.profile.RiderProfileViewModel;
+import com.noor.khabarlagbe.rider.presentation.profile.RiderProfileViewModel_HiltModules;
 import dagger.hilt.android.ActivityRetainedLifecycle;
 import dagger.hilt.android.ViewModelLifecycle;
 import dagger.hilt.android.internal.builders.ActivityComponentBuilder;
@@ -24,11 +50,16 @@ import dagger.hilt.android.internal.managers.SavedStateHandleHolder;
 import dagger.hilt.android.internal.modules.ApplicationContextModule;
 import dagger.internal.DaggerGenerated;
 import dagger.internal.DoubleCheck;
+import dagger.internal.IdentifierNameString;
+import dagger.internal.KeepFieldType;
+import dagger.internal.LazyClassKeyMap;
 import dagger.internal.Preconditions;
+import dagger.internal.Provider;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.processing.Generated;
-import javax.inject.Provider;
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
 
 @DaggerGenerated
 @Generated(
@@ -362,12 +393,12 @@ public final class DaggerRiderApplication_HiltComponents_SingletonC {
 
     @Override
     public DefaultViewModelFactories.InternalFactoryFactory getHiltInternalFactoryFactory() {
-      return DefaultViewModelFactories_InternalFactoryFactory_Factory.newInstance(ImmutableMap.<Class<?>, Boolean>of(), new ViewModelCBuilder(singletonCImpl, activityRetainedCImpl));
+      return DefaultViewModelFactories_InternalFactoryFactory_Factory.newInstance(getViewModelKeys(), new ViewModelCBuilder(singletonCImpl, activityRetainedCImpl));
     }
 
     @Override
     public Map<Class<?>, Boolean> getViewModelKeys() {
-      return ImmutableMap.<Class<?>, Boolean>of();
+      return LazyClassKeyMap.<Boolean>of(ImmutableMap.<String, Boolean>builderWithExpectedSize(6).put(LazyClassKeyProvider.com_noor_khabarlagbe_rider_presentation_delivery_ActiveDeliveryViewModel, ActiveDeliveryViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_noor_khabarlagbe_rider_presentation_orders_AvailableOrdersViewModel, AvailableOrdersViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_noor_khabarlagbe_rider_presentation_earnings_EarningsViewModel, EarningsViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_noor_khabarlagbe_rider_presentation_auth_RiderAuthViewModel, RiderAuthViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_noor_khabarlagbe_rider_presentation_home_RiderHomeViewModel, RiderHomeViewModel_HiltModules.KeyModule.provide()).put(LazyClassKeyProvider.com_noor_khabarlagbe_rider_presentation_profile_RiderProfileViewModel, RiderProfileViewModel_HiltModules.KeyModule.provide()).build());
     }
 
     @Override
@@ -384,32 +415,168 @@ public final class DaggerRiderApplication_HiltComponents_SingletonC {
     public ViewComponentBuilder viewComponentBuilder() {
       return new ViewCBuilder(singletonCImpl, activityRetainedCImpl, activityCImpl);
     }
+
+    @IdentifierNameString
+    private static final class LazyClassKeyProvider {
+      static String com_noor_khabarlagbe_rider_presentation_delivery_ActiveDeliveryViewModel = "com.noor.khabarlagbe.rider.presentation.delivery.ActiveDeliveryViewModel";
+
+      static String com_noor_khabarlagbe_rider_presentation_auth_RiderAuthViewModel = "com.noor.khabarlagbe.rider.presentation.auth.RiderAuthViewModel";
+
+      static String com_noor_khabarlagbe_rider_presentation_earnings_EarningsViewModel = "com.noor.khabarlagbe.rider.presentation.earnings.EarningsViewModel";
+
+      static String com_noor_khabarlagbe_rider_presentation_profile_RiderProfileViewModel = "com.noor.khabarlagbe.rider.presentation.profile.RiderProfileViewModel";
+
+      static String com_noor_khabarlagbe_rider_presentation_orders_AvailableOrdersViewModel = "com.noor.khabarlagbe.rider.presentation.orders.AvailableOrdersViewModel";
+
+      static String com_noor_khabarlagbe_rider_presentation_home_RiderHomeViewModel = "com.noor.khabarlagbe.rider.presentation.home.RiderHomeViewModel";
+
+      @KeepFieldType
+      ActiveDeliveryViewModel com_noor_khabarlagbe_rider_presentation_delivery_ActiveDeliveryViewModel2;
+
+      @KeepFieldType
+      RiderAuthViewModel com_noor_khabarlagbe_rider_presentation_auth_RiderAuthViewModel2;
+
+      @KeepFieldType
+      EarningsViewModel com_noor_khabarlagbe_rider_presentation_earnings_EarningsViewModel2;
+
+      @KeepFieldType
+      RiderProfileViewModel com_noor_khabarlagbe_rider_presentation_profile_RiderProfileViewModel2;
+
+      @KeepFieldType
+      AvailableOrdersViewModel com_noor_khabarlagbe_rider_presentation_orders_AvailableOrdersViewModel2;
+
+      @KeepFieldType
+      RiderHomeViewModel com_noor_khabarlagbe_rider_presentation_home_RiderHomeViewModel2;
+    }
   }
 
   private static final class ViewModelCImpl extends RiderApplication_HiltComponents.ViewModelC {
+    private final SavedStateHandle savedStateHandle;
+
     private final SingletonCImpl singletonCImpl;
 
     private final ActivityRetainedCImpl activityRetainedCImpl;
 
     private final ViewModelCImpl viewModelCImpl = this;
 
+    private Provider<ActiveDeliveryViewModel> activeDeliveryViewModelProvider;
+
+    private Provider<AvailableOrdersViewModel> availableOrdersViewModelProvider;
+
+    private Provider<EarningsViewModel> earningsViewModelProvider;
+
+    private Provider<RiderAuthViewModel> riderAuthViewModelProvider;
+
+    private Provider<RiderHomeViewModel> riderHomeViewModelProvider;
+
+    private Provider<RiderProfileViewModel> riderProfileViewModelProvider;
+
     private ViewModelCImpl(SingletonCImpl singletonCImpl,
         ActivityRetainedCImpl activityRetainedCImpl, SavedStateHandle savedStateHandleParam,
         ViewModelLifecycle viewModelLifecycleParam) {
       this.singletonCImpl = singletonCImpl;
       this.activityRetainedCImpl = activityRetainedCImpl;
-
+      this.savedStateHandle = savedStateHandleParam;
+      initialize(savedStateHandleParam, viewModelLifecycleParam);
 
     }
 
+    @SuppressWarnings("unchecked")
+    private void initialize(final SavedStateHandle savedStateHandleParam,
+        final ViewModelLifecycle viewModelLifecycleParam) {
+      this.activeDeliveryViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 0);
+      this.availableOrdersViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 1);
+      this.earningsViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 2);
+      this.riderAuthViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 3);
+      this.riderHomeViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 4);
+      this.riderProfileViewModelProvider = new SwitchingProvider<>(singletonCImpl, activityRetainedCImpl, viewModelCImpl, 5);
+    }
+
     @Override
-    public Map<Class<?>, Provider<ViewModel>> getHiltViewModelMap() {
-      return ImmutableMap.<Class<?>, Provider<ViewModel>>of();
+    public Map<Class<?>, javax.inject.Provider<ViewModel>> getHiltViewModelMap() {
+      return LazyClassKeyMap.<javax.inject.Provider<ViewModel>>of(ImmutableMap.<String, javax.inject.Provider<ViewModel>>builderWithExpectedSize(6).put(LazyClassKeyProvider.com_noor_khabarlagbe_rider_presentation_delivery_ActiveDeliveryViewModel, ((Provider) activeDeliveryViewModelProvider)).put(LazyClassKeyProvider.com_noor_khabarlagbe_rider_presentation_orders_AvailableOrdersViewModel, ((Provider) availableOrdersViewModelProvider)).put(LazyClassKeyProvider.com_noor_khabarlagbe_rider_presentation_earnings_EarningsViewModel, ((Provider) earningsViewModelProvider)).put(LazyClassKeyProvider.com_noor_khabarlagbe_rider_presentation_auth_RiderAuthViewModel, ((Provider) riderAuthViewModelProvider)).put(LazyClassKeyProvider.com_noor_khabarlagbe_rider_presentation_home_RiderHomeViewModel, ((Provider) riderHomeViewModelProvider)).put(LazyClassKeyProvider.com_noor_khabarlagbe_rider_presentation_profile_RiderProfileViewModel, ((Provider) riderProfileViewModelProvider)).build());
     }
 
     @Override
     public Map<Class<?>, Object> getHiltViewModelAssistedMap() {
       return ImmutableMap.<Class<?>, Object>of();
+    }
+
+    @IdentifierNameString
+    private static final class LazyClassKeyProvider {
+      static String com_noor_khabarlagbe_rider_presentation_delivery_ActiveDeliveryViewModel = "com.noor.khabarlagbe.rider.presentation.delivery.ActiveDeliveryViewModel";
+
+      static String com_noor_khabarlagbe_rider_presentation_home_RiderHomeViewModel = "com.noor.khabarlagbe.rider.presentation.home.RiderHomeViewModel";
+
+      static String com_noor_khabarlagbe_rider_presentation_orders_AvailableOrdersViewModel = "com.noor.khabarlagbe.rider.presentation.orders.AvailableOrdersViewModel";
+
+      static String com_noor_khabarlagbe_rider_presentation_profile_RiderProfileViewModel = "com.noor.khabarlagbe.rider.presentation.profile.RiderProfileViewModel";
+
+      static String com_noor_khabarlagbe_rider_presentation_earnings_EarningsViewModel = "com.noor.khabarlagbe.rider.presentation.earnings.EarningsViewModel";
+
+      static String com_noor_khabarlagbe_rider_presentation_auth_RiderAuthViewModel = "com.noor.khabarlagbe.rider.presentation.auth.RiderAuthViewModel";
+
+      @KeepFieldType
+      ActiveDeliveryViewModel com_noor_khabarlagbe_rider_presentation_delivery_ActiveDeliveryViewModel2;
+
+      @KeepFieldType
+      RiderHomeViewModel com_noor_khabarlagbe_rider_presentation_home_RiderHomeViewModel2;
+
+      @KeepFieldType
+      AvailableOrdersViewModel com_noor_khabarlagbe_rider_presentation_orders_AvailableOrdersViewModel2;
+
+      @KeepFieldType
+      RiderProfileViewModel com_noor_khabarlagbe_rider_presentation_profile_RiderProfileViewModel2;
+
+      @KeepFieldType
+      EarningsViewModel com_noor_khabarlagbe_rider_presentation_earnings_EarningsViewModel2;
+
+      @KeepFieldType
+      RiderAuthViewModel com_noor_khabarlagbe_rider_presentation_auth_RiderAuthViewModel2;
+    }
+
+    private static final class SwitchingProvider<T> implements Provider<T> {
+      private final SingletonCImpl singletonCImpl;
+
+      private final ActivityRetainedCImpl activityRetainedCImpl;
+
+      private final ViewModelCImpl viewModelCImpl;
+
+      private final int id;
+
+      SwitchingProvider(SingletonCImpl singletonCImpl, ActivityRetainedCImpl activityRetainedCImpl,
+          ViewModelCImpl viewModelCImpl, int id) {
+        this.singletonCImpl = singletonCImpl;
+        this.activityRetainedCImpl = activityRetainedCImpl;
+        this.viewModelCImpl = viewModelCImpl;
+        this.id = id;
+      }
+
+      @SuppressWarnings("unchecked")
+      @Override
+      public T get() {
+        switch (id) {
+          case 0: // com.noor.khabarlagbe.rider.presentation.delivery.ActiveDeliveryViewModel 
+          return (T) new ActiveDeliveryViewModel(singletonCImpl.provideRiderOrderRepositoryProvider.get(), singletonCImpl.provideLocationRepositoryProvider.get(), viewModelCImpl.savedStateHandle);
+
+          case 1: // com.noor.khabarlagbe.rider.presentation.orders.AvailableOrdersViewModel 
+          return (T) new AvailableOrdersViewModel(singletonCImpl.provideRiderOrderRepositoryProvider.get());
+
+          case 2: // com.noor.khabarlagbe.rider.presentation.earnings.EarningsViewModel 
+          return (T) new EarningsViewModel(singletonCImpl.provideRiderEarningsRepositoryProvider.get());
+
+          case 3: // com.noor.khabarlagbe.rider.presentation.auth.RiderAuthViewModel 
+          return (T) new RiderAuthViewModel(singletonCImpl.provideRiderAuthRepositoryProvider.get());
+
+          case 4: // com.noor.khabarlagbe.rider.presentation.home.RiderHomeViewModel 
+          return (T) new RiderHomeViewModel(singletonCImpl.provideRiderAuthRepositoryProvider.get(), singletonCImpl.provideRiderOrderRepositoryProvider.get(), singletonCImpl.provideRiderProfileRepositoryProvider.get());
+
+          case 5: // com.noor.khabarlagbe.rider.presentation.profile.RiderProfileViewModel 
+          return (T) new RiderProfileViewModel(singletonCImpl.provideRiderProfileRepositoryProvider.get(), singletonCImpl.provideRiderAuthRepositoryProvider.get());
+
+          default: throw new AssertionError(id);
+        }
+      }
     }
   }
 
@@ -418,7 +585,7 @@ public final class DaggerRiderApplication_HiltComponents_SingletonC {
 
     private final ActivityRetainedCImpl activityRetainedCImpl = this;
 
-    private dagger.internal.Provider<ActivityRetainedLifecycle> provideActivityRetainedLifecycleProvider;
+    private Provider<ActivityRetainedLifecycle> provideActivityRetainedLifecycleProvider;
 
     private ActivityRetainedCImpl(SingletonCImpl singletonCImpl,
         SavedStateHandleHolder savedStateHandleHolderParam) {
@@ -443,7 +610,7 @@ public final class DaggerRiderApplication_HiltComponents_SingletonC {
       return provideActivityRetainedLifecycleProvider.get();
     }
 
-    private static final class SwitchingProvider<T> implements dagger.internal.Provider<T> {
+    private static final class SwitchingProvider<T> implements Provider<T> {
       private final SingletonCImpl singletonCImpl;
 
       private final ActivityRetainedCImpl activityRetainedCImpl;
@@ -485,9 +652,38 @@ public final class DaggerRiderApplication_HiltComponents_SingletonC {
   private static final class SingletonCImpl extends RiderApplication_HiltComponents.SingletonC {
     private final SingletonCImpl singletonCImpl = this;
 
+    private Provider<OkHttpClient> provideOkHttpClientProvider;
+
+    private Provider<Retrofit> provideRetrofitProvider;
+
+    private Provider<RiderApi> provideRiderApiProvider;
+
+    private Provider<RiderOrderRepository> provideRiderOrderRepositoryProvider;
+
+    private Provider<LocationRepository> provideLocationRepositoryProvider;
+
+    private Provider<RiderEarningsRepository> provideRiderEarningsRepositoryProvider;
+
+    private Provider<RiderAuthRepository> provideRiderAuthRepositoryProvider;
+
+    private Provider<RiderProfileRepository> provideRiderProfileRepositoryProvider;
+
     private SingletonCImpl() {
 
+      initialize();
 
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initialize() {
+      this.provideOkHttpClientProvider = DoubleCheck.provider(new SwitchingProvider<OkHttpClient>(singletonCImpl, 3));
+      this.provideRetrofitProvider = DoubleCheck.provider(new SwitchingProvider<Retrofit>(singletonCImpl, 2));
+      this.provideRiderApiProvider = DoubleCheck.provider(new SwitchingProvider<RiderApi>(singletonCImpl, 1));
+      this.provideRiderOrderRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<RiderOrderRepository>(singletonCImpl, 0));
+      this.provideLocationRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<LocationRepository>(singletonCImpl, 4));
+      this.provideRiderEarningsRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<RiderEarningsRepository>(singletonCImpl, 5));
+      this.provideRiderAuthRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<RiderAuthRepository>(singletonCImpl, 6));
+      this.provideRiderProfileRepositoryProvider = DoubleCheck.provider(new SwitchingProvider<RiderProfileRepository>(singletonCImpl, 7));
     }
 
     @Override
@@ -507,6 +703,49 @@ public final class DaggerRiderApplication_HiltComponents_SingletonC {
     @Override
     public ServiceComponentBuilder serviceComponentBuilder() {
       return new ServiceCBuilder(singletonCImpl);
+    }
+
+    private static final class SwitchingProvider<T> implements Provider<T> {
+      private final SingletonCImpl singletonCImpl;
+
+      private final int id;
+
+      SwitchingProvider(SingletonCImpl singletonCImpl, int id) {
+        this.singletonCImpl = singletonCImpl;
+        this.id = id;
+      }
+
+      @SuppressWarnings("unchecked")
+      @Override
+      public T get() {
+        switch (id) {
+          case 0: // com.noor.khabarlagbe.rider.domain.repository.RiderOrderRepository 
+          return (T) NetworkModule_ProvideRiderOrderRepositoryFactory.provideRiderOrderRepository(singletonCImpl.provideRiderApiProvider.get());
+
+          case 1: // com.noor.khabarlagbe.rider.data.remote.api.RiderApi 
+          return (T) NetworkModule_ProvideRiderApiFactory.provideRiderApi(singletonCImpl.provideRetrofitProvider.get());
+
+          case 2: // retrofit2.Retrofit 
+          return (T) NetworkModule_ProvideRetrofitFactory.provideRetrofit(singletonCImpl.provideOkHttpClientProvider.get());
+
+          case 3: // okhttp3.OkHttpClient 
+          return (T) NetworkModule_ProvideOkHttpClientFactory.provideOkHttpClient();
+
+          case 4: // com.noor.khabarlagbe.rider.domain.repository.LocationRepository 
+          return (T) NetworkModule_ProvideLocationRepositoryFactory.provideLocationRepository(singletonCImpl.provideRiderApiProvider.get());
+
+          case 5: // com.noor.khabarlagbe.rider.domain.repository.RiderEarningsRepository 
+          return (T) NetworkModule_ProvideRiderEarningsRepositoryFactory.provideRiderEarningsRepository(singletonCImpl.provideRiderApiProvider.get());
+
+          case 6: // com.noor.khabarlagbe.rider.domain.repository.RiderAuthRepository 
+          return (T) NetworkModule_ProvideRiderAuthRepositoryFactory.provideRiderAuthRepository(singletonCImpl.provideRiderApiProvider.get());
+
+          case 7: // com.noor.khabarlagbe.rider.domain.repository.RiderProfileRepository 
+          return (T) NetworkModule_ProvideRiderProfileRepositoryFactory.provideRiderProfileRepository(singletonCImpl.provideRiderApiProvider.get());
+
+          default: throw new AssertionError(id);
+        }
+      }
     }
   }
 }
