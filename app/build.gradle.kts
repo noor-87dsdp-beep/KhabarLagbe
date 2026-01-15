@@ -111,6 +111,7 @@ dependencies {
     // Accompanist
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.accompanist.permissions)
+    implementation(libs.accompanist.swiperefresh)
     
     // Kotlin Serialization
     implementation(libs.kotlinx.serialization.json)
