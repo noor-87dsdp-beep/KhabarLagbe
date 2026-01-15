@@ -34,6 +34,9 @@ class CheckoutViewModel @Inject constructor(
     private val _placeOrderState = MutableStateFlow<PlaceOrderState>(PlaceOrderState.Idle)
     val placeOrderState: StateFlow<PlaceOrderState> = _placeOrderState.asStateFlow()
 
+    private val _savedAddresses = MutableStateFlow<List<Address>>(emptyList())
+    val savedAddresses: StateFlow<List<Address>> = _savedAddresses.asStateFlow()
+
     private var selectedAddress: Address? = null
     private var selectedPaymentMethod: PaymentMethod? = null
     private var specialInstructions: String? = null
@@ -73,6 +76,7 @@ class CheckoutViewModel @Inject constructor(
                                     restaurantId = cart.restaurantId
                                     val defaultAddress = addresses.find { it.isDefault } ?: addresses.firstOrNull()
                                     selectedAddress = defaultAddress
+                                    _savedAddresses.value = addresses
                                     
                                     val orderSummary = OrderSummary(
                                         subtotal = cart.subtotal,
@@ -107,6 +111,48 @@ class CheckoutViewModel @Inject constructor(
         val currentState = _uiState.value
         if (currentState is CheckoutUiState.Success) {
             _uiState.value = currentState.copy(selectedAddress = address)
+        }
+    }
+    
+    /**
+     * Add a new address
+     */
+    fun addAddress(address: Address) {
+        viewModelScope.launch {
+            try {
+                userRepository.addAddress(address)
+                loadCheckoutData()
+            } catch (e: Exception) {
+                // Handle error
+            }
+        }
+    }
+    
+    /**
+     * Update an existing address
+     */
+    fun updateAddress(address: Address) {
+        viewModelScope.launch {
+            try {
+                userRepository.updateAddress(address)
+                loadCheckoutData()
+            } catch (e: Exception) {
+                // Handle error
+            }
+        }
+    }
+    
+    /**
+     * Delete an address
+     */
+    fun deleteAddress(addressId: String) {
+        viewModelScope.launch {
+            try {
+                userRepository.deleteAddress(addressId)
+                loadCheckoutData()
+            } catch (e: Exception) {
+                // Handle error
+            }
         }
     }
 
