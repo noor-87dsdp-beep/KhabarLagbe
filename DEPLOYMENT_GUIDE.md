@@ -138,7 +138,7 @@ BKASH_APP_KEY=your_production_bkash_app_key
 BKASH_APP_SECRET=your_production_bkash_app_secret
 BKASH_USERNAME=your_production_bkash_username
 BKASH_PASSWORD=your_production_bkash_password
-BKASH_BASE_URL=https://tokenized.pay.bka sh.com
+BKASH_BASE_URL=https://tokenized.pay.bkash.com
 
 NAGAD_MERCHANT_ID=your_merchant_id
 NAGAD_MERCHANT_NUMBER=your_merchant_number

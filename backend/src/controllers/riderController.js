@@ -1,5 +1,6 @@
 const Rider = require('../models/Rider');
 const Order = require('../models/Order');
+const mongoose = require('mongoose');
 const { getIO } = require('../config/socket');
 
 // Register rider

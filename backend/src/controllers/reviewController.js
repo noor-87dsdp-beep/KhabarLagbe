@@ -2,6 +2,7 @@ const Review = require('../models/Review');
 const Order = require('../models/Order');
 const Restaurant = require('../models/Restaurant');
 const Rider = require('../models/Rider');
+const mongoose = require('mongoose');
 
 // Create review
 exports.createReview = async (req, res, next) => {
