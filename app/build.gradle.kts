@@ -39,6 +39,16 @@ android {
         buildConfigField("String", "MAPBOX_PUBLIC_TOKEN", "\"$mapboxPublicToken\"")
         manifestPlaceholders["MAPBOX_ACCESS_TOKEN"] = mapboxPublicToken
     }
+    
+    // Resolve Mapbox duplicate class conflicts
+    // Exclude older okhttp module that conflicts with common:24.0.0
+    configurations.all {
+        exclude(group = "com.mapbox.common", module = "okhttp")
+        resolutionStrategy {
+            // Force newer version of Mapbox common module to prevent version conflicts
+            force("com.mapbox.common:common:24.0.0")
+        }
+    }
 
     buildTypes {
         release {
