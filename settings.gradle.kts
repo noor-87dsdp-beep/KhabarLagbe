@@ -21,10 +21,21 @@ dependencyResolutionManagement {
             url = uri("https://api.mapbox.com/downloads/v2/releases/maven")
             credentials {
                 username = "mapbox"
-                password = providers.gradleProperty("MAPBOX_DOWNLOADS_TOKEN")
+                // Validate Mapbox token before attempting to use repository
+                val mapboxToken = providers.gradleProperty("MAPBOX_DOWNLOADS_TOKEN")
                     .orElse(providers.environmentVariable("MAPBOX_DOWNLOADS_TOKEN"))
-                    .orElse("")
-                    .get()
+                    .getOrElse("")
+                
+                if (mapboxToken.isEmpty()) {
+                    logger.warn("⚠️  MAPBOX_DOWNLOADS_TOKEN not found!")
+                    logger.warn("⚠️  Mapbox dependencies will fail to download.")
+                    logger.warn("⚠️  See MAPBOX_SETUP.md for configuration instructions.")
+                } else if (!mapboxToken.startsWith("sk.")) {
+                    logger.warn("⚠️  MAPBOX_DOWNLOADS_TOKEN should start with 'sk.'")
+                    logger.warn("⚠️  Current value starts with: ${mapboxToken.take(3)}")
+                }
+                
+                password = mapboxToken
             }
             authentication {
                 create<BasicAuthentication>("basic")
