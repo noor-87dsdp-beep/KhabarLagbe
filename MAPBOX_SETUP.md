@@ -82,6 +82,14 @@ The token is also injected into the AndroidManifest as meta-data for Mapbox SDK 
 - Delete `.gradle` folder and rebuild
 - Check that both tokens are set in `local.properties`
 
+### Duplicate class conflicts
+If you encounter duplicate class errors related to Mapbox:
+```
+Duplicate class com.mapbox.common.module.okhttp.* found in modules
+```
+
+**Solution:** See [MAPBOX_DEPENDENCY_FIX.md](./MAPBOX_DEPENDENCY_FIX.md) for detailed information about the dependency conflict resolution that has been implemented.
+
 ## Common Issues and Solutions
 
 ### 401 Unauthorized Error
