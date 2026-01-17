@@ -11,6 +11,14 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
+// Load local.properties file
+val localProperties = java.util.Properties()
+val localPropertiesFile = File(rootDir, "local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { localProperties.load(it) }
+}
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
@@ -22,9 +30,10 @@ dependencyResolutionManagement {
             credentials {
                 username = "mapbox"
                 // Validate Mapbox token before attempting to use repository
-                val mapboxToken = providers.gradleProperty("MAPBOX_DOWNLOADS_TOKEN")
-                    .orElse(providers.environmentVariable("MAPBOX_DOWNLOADS_TOKEN"))
-                    .getOrElse("")
+                val mapboxToken = localProperties.getProperty("MAPBOX_DOWNLOADS_TOKEN")
+                    ?: providers.gradleProperty("MAPBOX_DOWNLOADS_TOKEN").orNull
+                    ?: providers.environmentVariable("MAPBOX_DOWNLOADS_TOKEN").orNull
+                    ?: ""
                 
                 if (mapboxToken.isEmpty()) {
                     logger.warn("⚠️  MAPBOX_DOWNLOADS_TOKEN not found!")
