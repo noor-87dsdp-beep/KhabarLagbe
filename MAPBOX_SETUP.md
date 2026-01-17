@@ -32,6 +32,7 @@ The following permissions are already declared in `AndroidManifest.xml`:
 3. You need TWO tokens:
    - **Public Token** (starts with `pk.`) - For runtime SDK usage
    - **Secret/Downloads Token** (starts with `sk.`) - For Maven repository access
+   - **IMPORTANT**: Your secret token MUST have the **DOWNLOADS:READ** scope enabled
 
 ### 2. Configure Tokens Locally
 
@@ -80,6 +81,32 @@ The token is also injected into the AndroidManifest as meta-data for Mapbox SDK 
 - Run `./gradlew --stop` to stop all Gradle daemons
 - Delete `.gradle` folder and rebuild
 - Check that both tokens are set in `local.properties`
+
+## Common Issues and Solutions
+
+### 401 Unauthorized Error
+If you see this error:
+```
+Could not GET 'https://api.mapbox.com/downloads/v2/releases/maven/...'
+Received status code 401 from server: Unauthorized
+```
+
+**Solution:**
+1. Verify your secret token has **DOWNLOADS:READ** scope:
+   - Go to https://account.mapbox.com/access-tokens/
+   - Click on your secret token
+   - Ensure "DOWNLOADS:READ" is checked
+2. If not, create a new secret token with this scope enabled
+3. Update `MAPBOX_DOWNLOADS_TOKEN` in `local.properties`
+4. Run: `./gradlew --stop && ./gradlew clean`
+5. Rebuild the project
+
+### Token Not Being Read
+If Gradle can't find your token:
+1. Ensure `local.properties` is in the project root (same level as `settings.gradle.kts`)
+2. Check there are no spaces around the `=` sign
+3. Check there are no quotes around token values
+4. Verify file format is UTF-8 without BOM
 
 ## Next Steps
 
