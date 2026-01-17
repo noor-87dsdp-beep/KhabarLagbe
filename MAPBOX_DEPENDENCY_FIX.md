@@ -98,12 +98,15 @@ These are defined in `/gradle/libs.versions.toml`:
 [versions]
 mapbox = "11.0.0"
 mapboxNavigation = "2.17.0"
+mapboxCommon = "24.0.0"
 
 [libraries]
 mapbox-maps-android = { group = "com.mapbox.maps", name = "android", version.ref = "mapbox" }
 mapbox-maps-compose = { group = "com.mapbox.extension", name = "maps-compose", version.ref = "mapbox" }
 mapbox-navigation-android = { group = "com.mapbox.navigation", name = "android", version.ref = "mapboxNavigation" }
 ```
+
+**Note:** The `mapboxCommon` version is centrally defined in the version catalog for easy maintenance, though it's referenced directly in build scripts due to Gradle limitations.
 
 ## Verification Steps
 
@@ -142,8 +145,11 @@ To verify the fix works with valid Mapbox tokens:
 When updating Mapbox SDK versions:
 
 1. Check the [Mapbox Android SDK changelog](https://docs.mapbox.com/android/maps/guides/changelog/) for breaking changes
-2. Update versions in `/gradle/libs.versions.toml`
-3. Verify the `force()` version in the resolution strategy matches the latest `com.mapbox.common:common` version
+2. Update versions in `/gradle/libs.versions.toml`:
+   - `mapbox` for Maps SDK and Compose Extension
+   - `mapboxNavigation` for Navigation SDK
+   - `mapboxCommon` for the forced common module version
+3. Update the forced version in all `build.gradle.kts` files to match `mapboxCommon`
 4. Test the build with both debug and release configurations
 
 ## Related Files
