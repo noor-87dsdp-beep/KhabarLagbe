@@ -40,8 +40,9 @@ dependencyResolutionManagement {
                     logger.warn("⚠️  Mapbox dependencies will fail to download.")
                     logger.warn("⚠️  See MAPBOX_SETUP.md for configuration instructions.")
                 } else if (!mapboxToken.startsWith("sk.")) {
-                    logger.warn("⚠️  MAPBOX_DOWNLOADS_TOKEN should start with 'sk.'")
-                    logger.warn("⚠️  Current value starts with: ${mapboxToken.take(3)}")
+                    logger.warn("⚠️  MAPBOX_DOWNLOADS_TOKEN appears to be invalid!")
+                    logger.warn("⚠️  Secret tokens should start with 'sk.' prefix")
+                    logger.warn("⚠️  Please verify your token in local.properties")
                 }
                 
                 password = mapboxToken
