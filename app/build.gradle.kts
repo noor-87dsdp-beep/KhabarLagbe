@@ -1,3 +1,6 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,6 +8,13 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt.android.plugin)
     alias(libs.plugins.ksp)
+}
+
+// Load local.properties file
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    FileInputStream(localPropertiesFile).use { localProperties.load(it) }
 }
 
 android {
@@ -21,10 +31,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
         // Mapbox tokens from local.properties or environment variables
-        val mapboxPublicToken = providers.gradleProperty("MAPBOX_ACCESS_TOKEN")
-            .orElse(providers.environmentVariable("MAPBOX_ACCESS_TOKEN"))
-            .orElse("pk.mapbox_public_token_placeholder")
-            .get()
+        val mapboxPublicToken = localProperties.getProperty("MAPBOX_ACCESS_TOKEN")
+            ?: providers.gradleProperty("MAPBOX_ACCESS_TOKEN").orNull
+            ?: providers.environmentVariable("MAPBOX_ACCESS_TOKEN").orNull
+            ?: "pk.mapbox_public_token_placeholder"
         
         buildConfigField("String", "MAPBOX_PUBLIC_TOKEN", "\"$mapboxPublicToken\"")
         manifestPlaceholders["MAPBOX_ACCESS_TOKEN"] = mapboxPublicToken

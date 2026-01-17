@@ -3,10 +3,12 @@
 sdk.dir=/path/to/your/Android/sdk
 
 # Mapbox Configuration
-# Sign up at https://www.mapbox.com/ and get your access token
-# https://account.mapbox.com/access-tokens/
+# Get your tokens from https://account.mapbox.com/access-tokens/
+# Public token (starts with pk.) - For runtime SDK usage
 MAPBOX_ACCESS_TOKEN=pk.eyJ1IjoieW91ci11c2VybmFtZSIsImEiOiJ5b3VyLXRva2VuLWhlcmUifQ.your_token_signature
-# For downloads (Maven repository access) - Get from https://account.mapbox.com/access-tokens/
+# Secret token (starts with sk.) - For Maven repository access (requires DOWNLOADS:READ scope)
+# IMPORTANT: Your secret token MUST have the "DOWNLOADS:READ" scope enabled
+# To verify: Visit https://account.mapbox.com/access-tokens/, click your token, ensure "DOWNLOADS:READ" is checked
 MAPBOX_DOWNLOADS_TOKEN=sk.eyJ1IjoieW91ci11c2VybmFtZSIsImEiOiJ5b3VyLXNlY3JldC10b2tlbi1oZXJlIn0.your_secret_token
 
 # API Configuration (Optional - for future use)
