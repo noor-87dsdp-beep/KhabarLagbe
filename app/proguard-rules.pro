@@ -29,6 +29,7 @@
 -keepattributes Signature
 -keepattributes *Annotation*
 -keepattributes EnclosingMethod
+-keepattributes InnerClasses
 
 # Keep Mapbox native libraries
 -keep class com.mapbox.common.** { *; }
@@ -50,7 +51,6 @@
 -dontwarn org.conscrypt.ConscryptHostnameVerifier
 
 # Kotlin serialization
--keepattributes *Annotation*, InnerClasses
 -dontnote kotlinx.serialization.AnnotationsKt
 
 -keepclassmembers class kotlinx.serialization.json.** {
