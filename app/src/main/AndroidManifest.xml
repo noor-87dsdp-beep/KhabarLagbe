@@ -31,13 +31,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KhabarLagbe">
         
-        <!-- Mapbox Access Token - DISABLED until Mapbox dependencies are enabled -->
-        <!-- To enable: Uncomment Mapbox dependencies in app/build.gradle.kts -->
-        <!--
+        <!-- Mapbox Access Token -->
         <meta-data
             android:name="MAPBOX_ACCESS_TOKEN"
             android:value="${MAPBOX_ACCESS_TOKEN}" />
-        -->
         
         <activity
             android:name=".MainActivity"

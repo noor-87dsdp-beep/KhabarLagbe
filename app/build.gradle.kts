@@ -32,14 +32,13 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
         // Mapbox tokens from local.properties or environment variables
-        // Commented out until Mapbox dependencies are enabled
-        // val mapboxPublicToken = localProperties.getProperty("MAPBOX_ACCESS_TOKEN")
-        //     ?: providers.gradleProperty("MAPBOX_ACCESS_TOKEN").orNull
-        //     ?: providers.environmentVariable("MAPBOX_ACCESS_TOKEN").orNull
-        //     ?: "pk.mapbox_public_token_placeholder"
-        // 
-        // buildConfigField("String", "MAPBOX_PUBLIC_TOKEN", "\"$mapboxPublicToken\"")
-        // manifestPlaceholders["MAPBOX_ACCESS_TOKEN"] = mapboxPublicToken
+        val mapboxPublicToken = localProperties.getProperty("MAPBOX_ACCESS_TOKEN")
+            ?: providers.gradleProperty("MAPBOX_ACCESS_TOKEN").orNull
+            ?: providers.environmentVariable("MAPBOX_ACCESS_TOKEN").orNull
+            ?: "pk.mapbox_public_token_placeholder"
+        
+        buildConfigField("String", "MAPBOX_PUBLIC_TOKEN", "\"$mapboxPublicToken\"")
+        manifestPlaceholders["MAPBOX_ACCESS_TOKEN"] = mapboxPublicToken
     }
     
     // Resolve Mapbox duplicate class conflicts
@@ -110,13 +109,10 @@ dependencies {
     // Image Loading
     implementation(libs.coil.compose)
     
-    // Mapbox - commented out until MAPBOX_DOWNLOADS_TOKEN is configured
-    // For complete setup instructions, see: MAPBOX_SETUP.md in repository root
-    // To enable: Set MAPBOX_DOWNLOADS_TOKEN in local.properties
-    // Get token from https://account.mapbox.com/access-tokens/
-    // implementation(libs.mapbox.maps.android)
-    // implementation(libs.mapbox.maps.compose)
-    // implementation(libs.mapbox.navigation.android)
+    // Mapbox
+    implementation(libs.mapbox.maps.android)
+    implementation(libs.mapbox.maps.compose)
+    implementation(libs.mapbox.navigation.android)
     
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
