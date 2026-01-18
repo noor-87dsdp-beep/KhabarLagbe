@@ -6,13 +6,13 @@
 
 #### Version Updates
 - **Mapbox Maps SDK**: Upgraded to v11.0.0 (from 10.16.1)
-- **Mapbox Navigation SDK**: Added v2.17.0
+- **Mapbox Navigation SDK**: Added v3.4.0
 - **Mapbox Compose Extension**: Updated to v11.0.0
 
 #### Files Modified
 1. **gradle/libs.versions.toml**
    - Updated mapbox version to "11.0.0"
-   - Added mapboxNavigation version "2.17.0"
+   - Added mapboxNavigation version "3.4.0"
    - Added mapbox-navigation-android library dependency
 
 2. **settings.gradle.kts**

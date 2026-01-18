@@ -8,7 +8,7 @@ The KhabarLagbe User App now includes Mapbox integration for location services, 
 ### Dependencies (Already Added)
 - **Mapbox Maps SDK**: v11.0.0
 - **Mapbox Compose Extension**: v11.0.0  
-- **Mapbox Navigation SDK**: v2.17.0
+- **Mapbox Navigation SDK**: v3.4.0
 
 ### Files Modified
 1. `gradle/libs.versions.toml` - Updated Mapbox version to 11.0.0 and added Navigation SDK

@@ -90,14 +90,14 @@ Enhanced ProGuard rules to properly handle Mapbox dependencies during release bu
 Current Mapbox SDK versions used:
 - **Mapbox Maps SDK**: 11.0.0
 - **Mapbox Compose Extension**: 11.0.0
-- **Mapbox Navigation SDK**: 2.17.0
+- **Mapbox Navigation SDK**: 3.4.0
 - **Mapbox Common (forced)**: 24.0.0
 
 These are defined in `/gradle/libs.versions.toml`:
 ```toml
 [versions]
 mapbox = "11.0.0"
-mapboxNavigation = "2.17.0"
+mapboxNavigation = "3.4.0"
 mapboxCommon = "24.0.0"
 
 [libraries]
