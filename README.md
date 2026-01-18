@@ -244,7 +244,7 @@ io.coil-kt:coil-compose:2.7.0
 // Mapbox (with duplicate class conflict resolution)
 com.mapbox.maps:android:11.0.0
 com.mapbox.extension:maps-compose:11.0.0
-com.mapbox.navigation:android:2.17.0
+com.mapbox.navigation:android:3.4.0
 
 // Room Database
 androidx.room:room-ktx:2.6.1

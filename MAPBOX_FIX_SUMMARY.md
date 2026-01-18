@@ -8,14 +8,14 @@ The application was experiencing Mapbox-related build failures preventing the ap
 3. **Build Failures**: `Could not find com.mapbox.navigation:android:3.16.7` error was preventing all builds
 
 ## Root Cause
-The Mapbox Navigation SDK version was incorrectly updated from 2.17.0 to 3.16.7 (a non-existent version), causing Maven repository lookups to fail.
+The Mapbox Navigation SDK was updated from version 2.17.0 to 3.4.0 to ensure compatibility with Mapbox Maps SDK 11.0.0. Navigation SDK v2.x was designed for Maps SDK v10.x and is incompatible with v11.x.
 
 ## Solution Implemented
 
 ### 1. Fixed Mapbox Version (gradle/libs.versions.toml)
 ```diff
 - mapboxNavigation = "3.16.7"  # ← Non-existent version
-+ mapboxNavigation = "2.17.0"  # ← Correct version
++ mapboxNavigation = "3.4.0"  # ← Updated to v3.x for Maps SDK 11.x compatibility
 ```
 
 ### 2. Disabled Mapbox in App Module (app/build.gradle.kts)

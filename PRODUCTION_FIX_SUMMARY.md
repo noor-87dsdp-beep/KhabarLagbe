@@ -175,7 +175,7 @@ Added comprehensive ProGuard rules for:
 agp = "8.7.3"
 kotlin = "2.0.21"
 mapbox = "11.0.0"
-mapboxNavigation = "2.17.0"
+mapboxNavigation = "3.4.0"
 hiltAndroid = "2.51.1"
 retrofit = "2.11.0"
 composeBom = "2024.09.00"
