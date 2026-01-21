@@ -41,14 +41,13 @@ android {
         manifestPlaceholders["MAPBOX_ACCESS_TOKEN"] = mapboxPublicToken
     }
     
-    // Mapbox conflict resolution - commented out (Mapbox dependencies disabled)
-    // Uncomment if Mapbox dependencies are re-enabled
-    // configurations.all {
-    //     exclude(group = "com.mapbox.common", module = "okhttp")
-    //     resolutionStrategy {
-    //         force("com.mapbox.common:common:24.0.0")
-    //     }
-    // }
+    // Mapbox conflict resolution - resolve duplicate class issues
+    configurations.all {
+        exclude(group = "com.mapbox.common", module = "okhttp")
+        resolutionStrategy {
+            force("com.mapbox.common:common:24.0.0")
+        }
+    }
 
     buildTypes {
         debug {
@@ -112,9 +111,10 @@ dependencies {
     // Image Loading
     implementation(libs.coil.compose)
     
-    // Mapbox - commented out until token is configured
-    // To enable: Get Mapbox token from https://account.mapbox.com/access-tokens/
-    // Add MAPBOX_DOWNLOADS_TOKEN=sk.xxx to ~/.gradle/gradle.properties
+    // Mapbox Maps SDK for delivery tracking
+    // IMPORTANT: Requires MAPBOX_DOWNLOADS_TOKEN in ~/.gradle/gradle.properties
+    // Get token from https://account.mapbox.com/access-tokens/
+    // Uncomment when token is configured:
     // implementation(libs.mapbox.maps.android)
     // implementation(libs.mapbox.maps.compose)
     // implementation(libs.mapbox.navigation.android)

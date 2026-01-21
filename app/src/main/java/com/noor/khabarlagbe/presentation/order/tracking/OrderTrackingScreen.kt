@@ -1,5 +1,7 @@
 package com.noor.khabarlagbe.presentation.order.tracking
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,17 +14,27 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.noor.khabarlagbe.domain.model.OrderStatus
 import com.noor.khabarlagbe.domain.model.OrderTimelineEvent
+import com.noor.khabarlagbe.presentation.components.map.DeliveryTrackingMap
 import com.noor.khabarlagbe.ui.theme.Primary
 import com.noor.khabarlagbe.ui.theme.Success
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * Order Tracking Screen
+ * Displays real-time order tracking with rider location on map
+ * 
+ * Note: Sample data is used for demonstration. In production:
+ * - Order data should come from ViewModel/Repository
+ * - Location updates should use SocketManager.riderLocationUpdates flow
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrderTrackingScreen(
@@ -30,12 +42,30 @@ fun OrderTrackingScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    // TODO: Replace with ViewModel
+    val context = LocalContext.current
+    
+    // Sample data - in production this would come from ViewModel with SocketManager integration
     val orderStatus = OrderStatus.ON_THE_WAY
     val timeline = getSampleTimeline()
     val riderName = "John Smith"
     val riderPhone = "+1 (555) 987-6543"
     val estimatedArrival = "15 min"
+    
+    // Sample coordinates for Dhaka, Bangladesh (typical delivery scenario)
+    // In production, these would come from SocketManager.riderLocationUpdates flow
+    var riderLatitude by remember { mutableDoubleStateOf(23.7937) }
+    var riderLongitude by remember { mutableDoubleStateOf(90.4066) }
+    val destinationLatitude = 23.7806
+    val destinationLongitude = 90.4195
+    val restaurantLatitude = 23.8103
+    val restaurantLongitude = 90.4125
+    
+    // Simulate rider movement for demo (replace with SocketManager.riderLocationUpdates in production)
+    LaunchedEffect(Unit) {
+        kotlinx.coroutines.delay(3000)
+        riderLatitude = 23.7880
+        riderLongitude = 90.4100
+    }
     
     Scaffold(
         topBar = {
@@ -63,6 +93,29 @@ fun OrderTrackingScreen(
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
+            }
+            
+            // Live Tracking Map (when order is picked up or on the way)
+            if (orderStatus == OrderStatus.PICKED_UP || orderStatus == OrderStatus.ON_THE_WAY) {
+                item {
+                    Column {
+                        Text(
+                            text = "Live Tracking",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        DeliveryTrackingMap(
+                            riderLatitude = riderLatitude,
+                            riderLongitude = riderLongitude,
+                            destinationLatitude = destinationLatitude,
+                            destinationLongitude = destinationLongitude,
+                            restaurantLatitude = restaurantLatitude,
+                            restaurantLongitude = restaurantLongitude,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
             }
             
             // Status Card
@@ -139,7 +192,15 @@ fun OrderTrackingScreen(
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
-                            IconButton(onClick = { /* TODO: Call rider */ }) {
+                            IconButton(
+                                onClick = {
+                                    // Launch phone dialer with rider phone number
+                                    val intent = Intent(Intent.ACTION_DIAL).apply {
+                                        data = Uri.parse("tel:$riderPhone")
+                                    }
+                                    context.startActivity(intent)
+                                }
+                            ) {
                                 Icon(
                                     Icons.Filled.Phone,
                                     contentDescription = "Call",
