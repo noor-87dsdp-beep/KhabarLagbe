@@ -53,6 +53,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            isMinifyEnabled = false  // IMPORTANT: Keep disabled for debug
+            isDebuggable = true
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -113,6 +117,8 @@ dependencies {
     implementation(libs.mapbox.maps.android)
     implementation(libs.mapbox.maps.compose)
     implementation(libs.mapbox.navigation.android)
+    // Explicitly add mapbox-common to ensure base classes are present
+    implementation(libs.mapbox.common)
     
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
