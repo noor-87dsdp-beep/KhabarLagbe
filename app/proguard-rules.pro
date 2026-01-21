@@ -39,6 +39,26 @@
 -keep class * extends androidx.startup.Initializer { *; }
 -keep class androidx.startup.InitializationProvider { *; }
 
+# ==========================================
+# AndroidX Startup (CRITICAL for Mapbox)
+# ==========================================
+# Keep InitializationProvider and all Initializer implementations
+-keep class androidx.startup.** { *; }
+-keep interface androidx.startup.Initializer
+-keep class * extends androidx.startup.Initializer {
+    <init>();
+    public java.util.List dependencies();
+    public void create(android.content.Context);
+}
+
+# Keep all ContentProvider implementations
+-keep class * extends android.content.ContentProvider {
+    <init>();
+}
+
+# Keep androidx.startup.InitializationProvider specifically
+-keepnames class androidx.startup.InitializationProvider
+
 # Keep Mapbox Navigation lifecycle components
 -keep class com.mapbox.navigation.** { *; }
 -keep interface com.mapbox.navigation.** { *; }
