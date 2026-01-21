@@ -24,6 +24,7 @@ firebaseBom = "33.7.0"
 socketIo = "2.1.1"
 accompanist = "0.35.2-beta"
 kotlinSerialization = "1.7.3"
+playServicesLocation = "21.1.0"
 
 [libraries]
 # AndroidX Core
@@ -95,6 +96,9 @@ socketio-client = { group = "io.socket", name = "socket.io-client", version.ref 
 accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
 accompanist-swiperefresh = { group = "com.google.accompanist", name = "accompanist-swiperefresh", version.ref = "accompanist" }
+
+# Google Play Services
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 # Kotlin Serialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerialization" }

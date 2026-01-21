@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.noor.khabarlagbe.rider.navigation.RiderScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -98,7 +99,10 @@ fun RiderHomeScreen(
                         restaurantName = "রেস্টুরেন্ট ${index + 1}",
                         distance = "২.৫ কিমি",
                         earnings = "৳৬৫",
-                        onAccept = { /* Handle accept */ },
+                        onAccept = { 
+                            // Navigate to DeliveryScreen with map
+                            navController.navigate(RiderScreen.Delivery.createRoute("${1234 + index}"))
+                        },
                         onReject = { /* Handle reject */ }
                     )
                 }

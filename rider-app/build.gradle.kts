@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
+import java.io.FileInputStream
 
 plugins {
     alias(libs.plugins.android.application)
@@ -7,6 +9,13 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt.android.plugin)
     alias(libs.plugins.ksp)
+}
+
+// Load local.properties file
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    FileInputStream(localPropertiesFile).use { localProperties.load(it) }
 }
 
 android {
@@ -21,6 +30,15 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        
+        // Mapbox tokens with priority: gradle.properties > local.properties > env var
+        val mapboxPublicToken = providers.gradleProperty("MAPBOX_ACCESS_TOKEN").orNull
+            ?: localProperties.getProperty("MAPBOX_ACCESS_TOKEN")
+            ?: providers.environmentVariable("MAPBOX_ACCESS_TOKEN").orNull
+            ?: "pk.mapbox_public_token_placeholder"
+        
+        buildConfigField("String", "MAPBOX_PUBLIC_TOKEN", "\"$mapboxPublicToken\"")
+        manifestPlaceholders["MAPBOX_ACCESS_TOKEN"] = mapboxPublicToken
     }
     
     // Resolve Mapbox duplicate class conflicts
@@ -53,6 +71,7 @@ android {
         } }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -90,12 +109,14 @@ dependencies {
     // Image Loading
     implementation(libs.coil.compose)
     
-    // Mapbox - commented out until MAPBOX_DOWNLOADS_TOKEN is configured
-    // For complete setup instructions, see: CI_CD_SETUP.md in repository root
-    // To enable: Set MAPBOX_DOWNLOADS_TOKEN in gradle.properties or environment
-    // Get token from https://account.mapbox.com/access-tokens/
-    // implementation(libs.mapbox.maps.android)
-    // implementation(libs.mapbox.maps.compose)
+    // Mapbox Maps SDK for delivery tracking and navigation
+    implementation(libs.mapbox.maps.android)
+    implementation(libs.mapbox.maps.compose)
+    implementation(libs.mapbox.navigation.android)
+    implementation(libs.mapbox.common)
+    
+    // Google Play Services Location (for GPS tracking)
+    implementation(libs.play.services.location)
     
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)

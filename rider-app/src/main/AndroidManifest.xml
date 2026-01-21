@@ -24,6 +24,11 @@
         android:theme="@style/Theme.KhabarLagbe.Rider"
         android:usesCleartextTraffic="true">
         
+        <!-- Mapbox Access Token -->
+        <meta-data
+            android:name="MAPBOX_ACCESS_TOKEN"
+            android:value="${MAPBOX_ACCESS_TOKEN}" />
+        
         <activity
             android:name=".MainActivity"
             android:exported="true"

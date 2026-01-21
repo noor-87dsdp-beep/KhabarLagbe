@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.noor.khabarlagbe.domain.model.OrderStatus
 import com.noor.khabarlagbe.domain.model.OrderTimelineEvent
+import com.noor.khabarlagbe.presentation.components.map.DeliveryTrackingMap
 import com.noor.khabarlagbe.ui.theme.Primary
 import com.noor.khabarlagbe.ui.theme.Success
 import java.text.SimpleDateFormat
@@ -36,6 +37,22 @@ fun OrderTrackingScreen(
     val riderName = "John Smith"
     val riderPhone = "+1 (555) 987-6543"
     val estimatedArrival = "15 min"
+    
+    // Sample coordinates for Dhaka, Bangladesh (typical delivery scenario)
+    // In production, these would come from real-time socket updates
+    var riderLatitude by remember { mutableDoubleStateOf(23.7937) }
+    var riderLongitude by remember { mutableDoubleStateOf(90.4066) }
+    val destinationLatitude = 23.7806
+    val destinationLongitude = 90.4195
+    val restaurantLatitude = 23.8103
+    val restaurantLongitude = 90.4125
+    
+    // Simulate rider movement (in production, use SocketManager.riderLocationUpdates)
+    LaunchedEffect(Unit) {
+        kotlinx.coroutines.delay(3000)
+        riderLatitude = 23.7880
+        riderLongitude = 90.4100
+    }
     
     Scaffold(
         topBar = {
@@ -63,6 +80,29 @@ fun OrderTrackingScreen(
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
+            }
+            
+            // Live Tracking Map (when order is picked up or on the way)
+            if (orderStatus == OrderStatus.PICKED_UP || orderStatus == OrderStatus.ON_THE_WAY) {
+                item {
+                    Column {
+                        Text(
+                            text = "Live Tracking",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                        DeliveryTrackingMap(
+                            riderLatitude = riderLatitude,
+                            riderLongitude = riderLongitude,
+                            destinationLatitude = destinationLatitude,
+                            destinationLongitude = destinationLongitude,
+                            restaurantLatitude = restaurantLatitude,
+                            restaurantLongitude = restaurantLongitude,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
             }
             
             // Status Card
