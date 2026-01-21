@@ -53,6 +53,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            isMinifyEnabled = false  // IMPORTANT: Keep disabled for debug
+            isDebuggable = true
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
