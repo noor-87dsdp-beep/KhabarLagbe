@@ -37,6 +37,10 @@ fun RestaurantDetailsScreen(
             ?: SampleData.getBangladeshRestaurants().first()
     }
     
+    var isFavorite by remember { mutableStateOf(false) }
+    // Initial cart count - in production this would come from a ViewModel/Repository
+    var cartItemCount by remember { mutableStateOf(0) }
+    
     Scaffold(
         topBar = {
             TopAppBar(
@@ -47,11 +51,18 @@ fun RestaurantDetailsScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* TODO: Add to favorites */ }) {
-                        Icon(Icons.Filled.FavoriteBorder, contentDescription = "Favorite")
+                    IconButton(onClick = { 
+                        isFavorite = !isFavorite
+                        // In production: Call ViewModel to toggle favorite
+                    }) {
+                        Icon(
+                            if (isFavorite) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                            contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
+                            tint = if (isFavorite) Primary else MaterialTheme.colorScheme.onSurface
+                        )
                     }
                     IconButton(onClick = { navController.navigate(Screen.Cart.route) }) {
-                        BadgedBox(badge = { Badge { Text("2") } }) {
+                        BadgedBox(badge = { Badge { Text("$cartItemCount") } }) {
                             Icon(Icons.Filled.ShoppingCart, contentDescription = "Cart")
                         }
                     }
@@ -136,7 +147,10 @@ fun RestaurantDetailsScreen(
                 items(category.items) { menuItem ->
                     MenuItemCard(
                         item = menuItem,
-                        onAddToCart = { /* TODO: Add to cart */ }
+                        onAddToCart = { 
+                            cartItemCount++
+                            // In production: Call ViewModel to add item to cart
+                        }
                     )
                 }
             }

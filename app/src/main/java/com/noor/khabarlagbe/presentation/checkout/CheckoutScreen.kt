@@ -79,7 +79,7 @@ fun CheckoutScreen(
                                     fontWeight = FontWeight.Bold
                                 )
                             }
-                            TextButton(onClick = { /* TODO: Change address */ }) {
+                            TextButton(onClick = { navController.navigate(Screen.AddressSelection.route) }) {
                                 Text("Change")
                             }
                         }

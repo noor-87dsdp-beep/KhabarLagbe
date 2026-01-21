@@ -28,8 +28,8 @@ fun CartScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    // TODO: Replace with ViewModel
-    val cartItems = remember { getSampleCartItems() }
+    // TODO: Replace with ViewModel in production
+    var cartItems by remember { mutableStateOf(getSampleCartItems()) }
     val deliveryFee = 20.0
     val subtotal = cartItems.sumOf { it.totalPrice }
     val total = subtotal + deliveryFee
@@ -88,8 +88,29 @@ fun CartScreen(
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    items(cartItems) { item ->
-                        CartItemCard(item = item)
+                    items(cartItems, key = { it.id }) { item ->
+                        CartItemCard(
+                            item = item,
+                            onIncreaseQuantity = {
+                                cartItems = cartItems.map {
+                                    if (it.id == item.id) it.copy(quantity = it.quantity + 1)
+                                    else it
+                                }
+                            },
+                            onDecreaseQuantity = {
+                                if (item.quantity > 1) {
+                                    cartItems = cartItems.map {
+                                        if (it.id == item.id) it.copy(quantity = it.quantity - 1)
+                                        else it
+                                    }
+                                } else {
+                                    cartItems = cartItems.filter { it.id != item.id }
+                                }
+                            },
+                            onRemoveItem = {
+                                cartItems = cartItems.filter { it.id != item.id }
+                            }
+                        )
                     }
                 }
                 
@@ -142,7 +163,12 @@ fun CartScreen(
 }
 
 @Composable
-fun CartItemCard(item: CartItem) {
+fun CartItemCard(
+    item: CartItem,
+    onIncreaseQuantity: () -> Unit = {},
+    onDecreaseQuantity: () -> Unit = {},
+    onRemoveItem: () -> Unit = {}
+) {
     Card(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -189,7 +215,7 @@ fun CartItemCard(item: CartItem) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = { /* TODO: Decrease quantity */ }) {
+                    IconButton(onClick = onDecreaseQuantity) {
                         Icon(Icons.Filled.Remove, contentDescription = "Decrease")
                     }
                     Text(
@@ -198,11 +224,11 @@ fun CartItemCard(item: CartItem) {
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(horizontal = 8.dp)
                     )
-                    IconButton(onClick = { /* TODO: Increase quantity */ }) {
+                    IconButton(onClick = onIncreaseQuantity) {
                         Icon(Icons.Filled.Add, contentDescription = "Increase")
                     }
                 }
-                IconButton(onClick = { /* TODO: Remove item */ }) {
+                IconButton(onClick = onRemoveItem) {
                     Icon(
                         Icons.Filled.Delete,
                         contentDescription = "Remove",

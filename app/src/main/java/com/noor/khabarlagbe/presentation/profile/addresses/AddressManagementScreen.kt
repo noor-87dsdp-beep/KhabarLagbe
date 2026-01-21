@@ -73,7 +73,7 @@ fun AddressManagementScreen(
                 AddressesList(
                     addresses = state.addresses,
                     onEditClick = { address ->
-                        // TODO: Navigate to edit address screen
+                        navController.navigate(Screen.EditAddress.createRoute(address.id))
                     },
                     onDeleteClick = { address ->
                         addressToDelete = address

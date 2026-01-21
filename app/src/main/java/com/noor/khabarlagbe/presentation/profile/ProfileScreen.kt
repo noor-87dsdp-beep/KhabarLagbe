@@ -86,56 +86,56 @@ fun ProfileScreen(
                 ProfileMenuItem(
                     icon = Icons.Filled.Edit,
                     title = "Edit Profile",
-                    onClick = { /* TODO */ }
+                    onClick = { navController.navigate(Screen.EditProfile.route) }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 
                 ProfileMenuItem(
                     icon = Icons.Filled.LocationOn,
                     title = "Saved Addresses",
-                    onClick = { /* TODO */ }
+                    onClick = { navController.navigate(Screen.SavedAddresses.route) }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 
                 ProfileMenuItem(
                     icon = Icons.Filled.History,
                     title = "Order History",
-                    onClick = { /* TODO */ }
+                    onClick = { navController.navigate(Screen.OrderHistory.route) }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 
                 ProfileMenuItem(
                     icon = Icons.Filled.Favorite,
                     title = "Favorites",
-                    onClick = { /* TODO */ }
+                    onClick = { navController.navigate(Screen.Favorites.route) }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 
                 ProfileMenuItem(
                     icon = Icons.Filled.Payment,
                     title = "Payment Methods",
-                    onClick = { /* TODO */ }
+                    onClick = { navController.navigate(Screen.PaymentMethod.route) }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 
                 ProfileMenuItem(
                     icon = Icons.Filled.Notifications,
                     title = "Notifications",
-                    onClick = { /* TODO */ }
+                    onClick = { /* Notifications settings - Coming soon */ }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 
                 ProfileMenuItem(
                     icon = Icons.Filled.Settings,
                     title = "Settings",
-                    onClick = { /* TODO */ }
+                    onClick = { /* Settings - Coming soon */ }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 
                 ProfileMenuItem(
                     icon = Icons.AutoMirrored.Filled.Help,
                     title = "Help & Support",
-                    onClick = { /* TODO */ }
+                    onClick = { /* Help & Support - Coming soon */ }
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 
