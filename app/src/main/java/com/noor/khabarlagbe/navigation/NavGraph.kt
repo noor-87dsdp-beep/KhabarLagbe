@@ -36,6 +36,11 @@ import com.noor.khabarlagbe.presentation.social.ShareOrderScreen
 import com.noor.khabarlagbe.presentation.schedule.ScheduleOrderScreen
 import com.noor.khabarlagbe.presentation.schedule.RecurringOrderScreen
 import com.noor.khabarlagbe.presentation.schedule.MealPlanScreen
+import com.noor.khabarlagbe.presentation.ai.SmartRecommendationsScreen
+import com.noor.khabarlagbe.presentation.ai.VoiceOrderScreen
+import com.noor.khabarlagbe.presentation.support.HelpCenterScreen
+import com.noor.khabarlagbe.presentation.support.LiveChatScreen
+import com.noor.khabarlagbe.presentation.support.ReportIssueScreen
 
 @Composable
 fun NavGraph(
@@ -232,6 +237,41 @@ fun NavGraph(
         
         composable(Screen.MealPlan.route) {
             MealPlanScreen(navController = navController)
+        }
+        
+        // AI Features
+        composable(Screen.SmartRecommendations.route) {
+            SmartRecommendationsScreen(navController = navController)
+        }
+        
+        composable(Screen.VoiceOrder.route) {
+            VoiceOrderScreen(navController = navController)
+        }
+        
+        // Support
+        composable(Screen.HelpCenter.route) {
+            HelpCenterScreen(navController = navController)
+        }
+        
+        composable(Screen.LiveChat.route) {
+            LiveChatScreen(navController = navController)
+        }
+        
+        composable(
+            route = Screen.ReportIssue.route,
+            arguments = listOf(
+                navArgument("orderId") { 
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ) { backStackEntry ->
+            val orderId = backStackEntry.arguments?.getString("orderId")?.takeIf { it != "none" }
+            ReportIssueScreen(
+                navController = navController,
+                orderId = orderId
+            )
         }
     }
 }

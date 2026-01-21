@@ -65,4 +65,15 @@ sealed class Screen(val route: String) {
     data object ScheduleOrder : Screen("schedule_order")
     data object RecurringOrder : Screen("recurring_order")
     data object MealPlan : Screen("meal_plan")
+    
+    // AI Features
+    data object SmartRecommendations : Screen("smart_recommendations")
+    data object VoiceOrder : Screen("voice_order")
+    
+    // Support
+    data object HelpCenter : Screen("help_center")
+    data object LiveChat : Screen("live_chat")
+    data object ReportIssue : Screen("report_issue/{orderId}") {
+        fun createRoute(orderId: String? = null) = if (orderId != null) "report_issue/$orderId" else "report_issue/none"
+    }
 }
