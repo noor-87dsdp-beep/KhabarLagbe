@@ -41,16 +41,14 @@ android {
         manifestPlaceholders["MAPBOX_ACCESS_TOKEN"] = mapboxPublicToken
     }
     
-    // Resolve Mapbox duplicate class conflicts
-    // Exclude older okhttp module that conflicts with common:24.0.0
-    configurations.all {
-        exclude(group = "com.mapbox.common", module = "okhttp")
-        resolutionStrategy {
-            // Force newer version of Mapbox common module to prevent version conflicts
-            // Version is defined in gradle/libs.versions.toml as mapboxCommon
-            force("com.mapbox.common:common:24.0.0")
-        }
-    }
+    // Mapbox conflict resolution - commented out (Mapbox dependencies disabled)
+    // Uncomment if Mapbox dependencies are re-enabled
+    // configurations.all {
+    //     exclude(group = "com.mapbox.common", module = "okhttp")
+    //     resolutionStrategy {
+    //         force("com.mapbox.common:common:24.0.0")
+    //     }
+    // }
 
     buildTypes {
         debug {
@@ -114,12 +112,13 @@ dependencies {
     // Image Loading
     implementation(libs.coil.compose)
     
-    // Mapbox
-    implementation(libs.mapbox.maps.android)
-    implementation(libs.mapbox.maps.compose)
-    implementation(libs.mapbox.navigation.android)
-    // Explicitly add mapbox-common to ensure base classes are present
-    implementation(libs.mapbox.common)
+    // Mapbox - commented out until token is configured
+    // To enable: Get Mapbox token from https://account.mapbox.com/access-tokens/
+    // Add MAPBOX_DOWNLOADS_TOKEN=sk.xxx to ~/.gradle/gradle.properties
+    // implementation(libs.mapbox.maps.android)
+    // implementation(libs.mapbox.maps.compose)
+    // implementation(libs.mapbox.navigation.android)
+    // implementation(libs.mapbox.common)
     
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
