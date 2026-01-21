@@ -2,8 +2,8 @@ package com.noor.khabarlagbe.presentation.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.StarHalf
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.StarHalf
 import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -52,7 +52,7 @@ fun RatingStars(
             val starValue = index + 1
             val icon = when {
                 rating >= starValue -> Icons.Filled.Star
-                rating >= starValue - 0.5 -> Icons.Filled.StarHalf
+                rating >= starValue - 0.5 -> Icons.AutoMirrored.Filled.StarHalf
                 else -> Icons.Outlined.StarOutline
             }
             

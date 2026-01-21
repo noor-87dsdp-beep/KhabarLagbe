@@ -102,7 +102,7 @@ private fun TimelineStep(
             
             // Connector line
             if (!isLast) {
-                Divider(
+                VerticalDivider(
                     modifier = Modifier
                         .width(2.dp)
                         .height(48.dp),

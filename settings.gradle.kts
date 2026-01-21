@@ -41,32 +41,20 @@ dependencyResolutionManagement {
                 
                 password = mapboxToken
                 
-                // Validation with clearer error messages
+                // Validation - show warning but don't fail build (Mapbox is optional)
                 if (mapboxToken.isEmpty()) {
-                    logger.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-                    logger.error("❌ MAPBOX_DOWNLOADS_TOKEN NOT FOUND!")
-                    logger.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-                    logger.error("")
-                    logger.error("📍 QUICK FIX - Add to ~/.gradle/gradle.properties:")
-                    logger.error("   MAPBOX_DOWNLOADS_TOKEN=sk.your_secret_token_here")
-                    logger.error("")
-                    logger.error("📖 Get your token: https://account.mapbox.com/access-tokens/")
-                    logger.error("   • Click 'Create a token'")
-                    logger.error("   • Enable 'DOWNLOADS:READ' scope")
-                    logger.error("   • Copy the token (starts with sk.)")
-                    logger.error("")
-                    logger.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+                    logger.warn("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+                    logger.warn("⚠️ MAPBOX_DOWNLOADS_TOKEN NOT FOUND (Mapbox features disabled)")
+                    logger.warn("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+                    logger.warn("📍 To enable Mapbox, add to ~/.gradle/gradle.properties:")
+                    logger.warn("   MAPBOX_DOWNLOADS_TOKEN=sk.your_secret_token_here")
+                    logger.warn("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
                 } else if (!mapboxToken.startsWith("sk.")) {
-                    logger.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-                    logger.error("❌ INVALID MAPBOX_DOWNLOADS_TOKEN!")
-                    logger.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-                    logger.error("")
-                    logger.error("⚠️  Secret tokens must start with 'sk.' prefix")
-                    logger.error("⚠️  You might be using a public token (pk.) instead")
-                    logger.error("")
-                    logger.error("📖 Get correct token: https://account.mapbox.com/access-tokens/")
-                    logger.error("")
-                    logger.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+                    logger.warn("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+                    logger.warn("⚠️ INVALID MAPBOX_DOWNLOADS_TOKEN (Mapbox features disabled)")
+                    logger.warn("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+                    logger.warn("⚠️ Secret tokens must start with 'sk.' prefix")
+                    logger.warn("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
                 } else {
                     logger.info("✅ Mapbox authentication configured successfully")
                 }

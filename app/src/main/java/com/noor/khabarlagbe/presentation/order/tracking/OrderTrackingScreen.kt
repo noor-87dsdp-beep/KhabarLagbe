@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -42,7 +43,7 @@ fun OrderTrackingScreen(
                 title = { Text("Track Order") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -196,7 +197,7 @@ fun TimelineItem(event: OrderTimelineEvent) {
                         .height(40.dp)
                         .padding(vertical = 4.dp)
                 ) {
-                    Divider(modifier = Modifier.fillMaxHeight())
+                    VerticalDivider(modifier = Modifier.fillMaxHeight())
                 }
             }
         }
