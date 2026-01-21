@@ -34,7 +34,7 @@ dependencyResolutionManagement {
                 // 1. ~/.gradle/gradle.properties (RECOMMENDED - secure & persistent)
                 // 2. local.properties (project-specific)
                 // 3. Environment variable (CI/CD)
-                password = providers.gradleProperty("MAPBOX_DOWNLOADS_TOKEN").orNull
+                val mapboxToken = providers.gradleProperty("MAPBOX_DOWNLOADS_TOKEN").orNull
                     ?: run {
                         val localProperties = java.util.Properties()
                         val localPropertiesFile = File(rootDir, "local.properties")
@@ -46,8 +46,10 @@ dependencyResolutionManagement {
                     ?: providers.environmentVariable("MAPBOX_DOWNLOADS_TOKEN").orNull
                     ?: ""
                 
+                password = mapboxToken
+                
                 // Validation with clearer error messages
-                if (password.isEmpty()) {
+                if (mapboxToken.isEmpty()) {
                     logger.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
                     logger.error("❌ MAPBOX_DOWNLOADS_TOKEN NOT FOUND!")
                     logger.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
@@ -61,7 +63,7 @@ dependencyResolutionManagement {
                     logger.error("   • Copy the token (starts with sk.)")
                     logger.error("")
                     logger.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-                } else if (!password.startsWith("sk.")) {
+                } else if (!mapboxToken.startsWith("sk.")) {
                     logger.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
                     logger.error("❌ INVALID MAPBOX_DOWNLOADS_TOKEN!")
                     logger.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
