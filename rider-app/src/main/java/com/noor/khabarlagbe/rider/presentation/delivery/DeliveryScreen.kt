@@ -1,6 +1,8 @@
 package com.noor.khabarlagbe.rider.presentation.delivery
 
 import android.Manifest
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -12,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -23,6 +26,11 @@ import com.noor.khabarlagbe.rider.presentation.map.RiderDeliveryMap
 /**
  * Delivery Screen for Rider App
  * Shows full-screen map with delivery route and order details overlay
+ * 
+ * Note: Sample data is used for demonstration. In production:
+ * - Order data should come from ViewModel/Repository
+ * - Location updates should use LocationService flow
+ * - Customer phone should enable actual calling
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
@@ -31,6 +39,8 @@ fun DeliveryScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    
     // Location permissions
     val locationPermissions = rememberMultiplePermissionsState(
         permissions = listOf(
@@ -56,9 +66,11 @@ fun DeliveryScreen(
     val customerLatitude = 23.7925
     val customerLongitude = 90.4078
     
-    // Simulate location updates (in production, use LocationService)
-    LaunchedEffect(Unit) {
-        while (true) {
+    // Simulate location updates for demo purposes
+    // In production, replace with LocationService.locationUpdates flow collection
+    // Note: LaunchedEffect coroutine automatically cancels when composable leaves composition
+    LaunchedEffect(orderStatus) {
+        while (orderStatus != OrderStatus.DELIVERED && orderStatus != OrderStatus.CANCELLED) {
             kotlinx.coroutines.delay(5000)
             // Simulate movement towards destination
             if (orderStatus == OrderStatus.ACCEPTED || orderStatus == OrderStatus.ARRIVED_AT_RESTAURANT) {
@@ -238,7 +250,15 @@ fun DeliveryScreen(
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
-                            IconButton(onClick = { /* TODO: Call customer */ }) {
+                            IconButton(
+                                onClick = {
+                                    // Launch phone dialer with customer phone number
+                                    val intent = Intent(Intent.ACTION_DIAL).apply {
+                                        data = Uri.parse("tel:$customerPhone")
+                                    }
+                                    context.startActivity(intent)
+                                }
+                            ) {
                                 Icon(
                                     imageVector = Icons.Filled.Phone,
                                     contentDescription = "Call Customer",

@@ -29,6 +29,16 @@ import kotlinx.coroutines.launch
  * Location Service for Rider App
  * Provides real-time GPS location updates for delivery tracking.
  * Runs as a foreground service to ensure continuous tracking.
+ * 
+ * Battery Impact Note:
+ * - Uses PRIORITY_HIGH_ACCURACY for precise delivery tracking
+ * - Updates every 5 seconds (suitable for active deliveries)
+ * - Should only run during active delivery sessions
+ * - Automatically stopped when delivery completes
+ * 
+ * Lifecycle Management:
+ * - LocationCallback is created in onCreate() and properly cleaned up in onDestroy()
+ * - Service scope is cancelled in onDestroy() to prevent memory leaks
  */
 class LocationService : Service() {
     

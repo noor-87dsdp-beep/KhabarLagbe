@@ -1,5 +1,7 @@
 package com.noor.khabarlagbe.presentation.order.tracking
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -24,6 +27,14 @@ import com.noor.khabarlagbe.ui.theme.Success
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ * Order Tracking Screen
+ * Displays real-time order tracking with rider location on map
+ * 
+ * Note: Sample data is used for demonstration. In production:
+ * - Order data should come from ViewModel/Repository
+ * - Location updates should use SocketManager.riderLocationUpdates flow
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrderTrackingScreen(
@@ -31,7 +42,9 @@ fun OrderTrackingScreen(
     navController: NavController,
     modifier: Modifier = Modifier
 ) {
-    // TODO: Replace with ViewModel
+    val context = LocalContext.current
+    
+    // Sample data - in production this would come from ViewModel with SocketManager integration
     val orderStatus = OrderStatus.ON_THE_WAY
     val timeline = getSampleTimeline()
     val riderName = "John Smith"
@@ -39,7 +52,7 @@ fun OrderTrackingScreen(
     val estimatedArrival = "15 min"
     
     // Sample coordinates for Dhaka, Bangladesh (typical delivery scenario)
-    // In production, these would come from real-time socket updates
+    // In production, these would come from SocketManager.riderLocationUpdates flow
     var riderLatitude by remember { mutableDoubleStateOf(23.7937) }
     var riderLongitude by remember { mutableDoubleStateOf(90.4066) }
     val destinationLatitude = 23.7806
@@ -47,7 +60,7 @@ fun OrderTrackingScreen(
     val restaurantLatitude = 23.8103
     val restaurantLongitude = 90.4125
     
-    // Simulate rider movement (in production, use SocketManager.riderLocationUpdates)
+    // Simulate rider movement for demo (replace with SocketManager.riderLocationUpdates in production)
     LaunchedEffect(Unit) {
         kotlinx.coroutines.delay(3000)
         riderLatitude = 23.7880
@@ -179,7 +192,15 @@ fun OrderTrackingScreen(
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
-                            IconButton(onClick = { /* TODO: Call rider */ }) {
+                            IconButton(
+                                onClick = {
+                                    // Launch phone dialer with rider phone number
+                                    val intent = Intent(Intent.ACTION_DIAL).apply {
+                                        data = Uri.parse("tel:$riderPhone")
+                                    }
+                                    context.startActivity(intent)
+                                }
+                            ) {
                                 Icon(
                                     Icons.Filled.Phone,
                                     contentDescription = "Call",
