@@ -52,4 +52,12 @@ sealed class Screen(val route: String) {
     data object Wallet : Screen("wallet")
     data object AddMoney : Screen("add_money")
     data object TransactionHistory : Screen("transaction_history")
+    
+    // Social
+    data object GroupOrder : Screen("group_order")
+    data object Referral : Screen("referral")
+    data object FriendsFeed : Screen("friends_feed")
+    data object ShareOrder : Screen("share_order/{orderId}") {
+        fun createRoute(orderId: String) = "share_order/$orderId"
+    }
 }
