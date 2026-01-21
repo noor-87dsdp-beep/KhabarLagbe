@@ -109,8 +109,8 @@ fun HomeScreen(
                         navController.navigate(Screen.RestaurantDetails.createRoute(restaurant.id))
                     },
                     onFavoriteClick = {
-                        // Toggle favorite - in production this would call ViewModel
-                        // For now, this provides visual feedback
+                        // In production: Call ViewModel to persist favorite state to database
+                        // The RestaurantCard handles visual toggle internally
                     },
                     modifier = Modifier
                         .fillMaxWidth()

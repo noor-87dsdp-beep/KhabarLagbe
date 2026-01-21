@@ -38,7 +38,8 @@ fun RestaurantDetailsScreen(
     }
     
     var isFavorite by remember { mutableStateOf(false) }
-    var cartItemCount by remember { mutableStateOf(2) }
+    // Initial cart count - in production this would come from a ViewModel/Repository
+    var cartItemCount by remember { mutableStateOf(0) }
     
     Scaffold(
         topBar = {
