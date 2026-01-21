@@ -41,6 +41,7 @@ fun OrderDetailsScreen(
     val cancelState by viewModel.cancelOrderState.collectAsState()
     
     var showCancelDialog by remember { mutableStateOf(false) }
+    var showHelpDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -52,7 +53,7 @@ fun OrderDetailsScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* TODO: Help */ }) {
+                    IconButton(onClick = { showHelpDialog = true }) {
                         Icon(Icons.AutoMirrored.Filled.Help, contentDescription = "Help")
                     }
                 }
@@ -89,6 +90,12 @@ fun OrderDetailsScreen(
                     showCancelDialog = false
                 },
                 onDismiss = { showCancelDialog = false }
+            )
+        }
+
+        if (showHelpDialog) {
+            HelpDialog(
+                onDismiss = { showHelpDialog = false }
             )
         }
 
@@ -784,4 +791,45 @@ private fun ErrorContent(
 private fun formatDate(timestamp: Long): String {
     val formatter = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
     return formatter.format(Date(timestamp))
+}
+
+@Composable
+private fun HelpDialog(
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        icon = {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.Help,
+                contentDescription = null,
+                tint = Primary
+            )
+        },
+        title = { Text("Help & Support") },
+        text = {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text("Need help with your order?")
+                Text(
+                    text = "📞 Call us: +880 1234 567 890",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = "📧 Email: support@khabarlagbe.com",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = "💬 Chat with us in the app",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+        },
+        confirmButton = {
+            Button(onClick = onDismiss) {
+                Text("Got it")
+            }
+        }
+    )
 }

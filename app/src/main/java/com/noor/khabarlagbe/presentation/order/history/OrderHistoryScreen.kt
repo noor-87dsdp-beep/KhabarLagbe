@@ -104,6 +104,15 @@ fun OrderHistoryScreen(
                                 },
                                 onTrackClick = { order ->
                                     navController.navigate(Screen.OrderTracking.createRoute(order.id))
+                                },
+                                onReorderClick = { order ->
+                                    // Navigate to cart with reordered items
+                                    // In production: ViewModel would add items to cart
+                                    navController.navigate(Screen.Cart.route)
+                                },
+                                onRateClick = { order ->
+                                    // Navigate to order details for rating
+                                    navController.navigate(Screen.OrderDetails.createRoute(order.id))
                                 }
                             )
                         }
@@ -201,7 +210,9 @@ private fun EmptyTabContent(isActiveTab: Boolean) {
 private fun OrdersList(
     orders: List<Order>,
     onOrderClick: (Order) -> Unit,
-    onTrackClick: (Order) -> Unit
+    onTrackClick: (Order) -> Unit,
+    onReorderClick: (Order) -> Unit = {},
+    onRateClick: (Order) -> Unit = {}
 ) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
@@ -211,7 +222,9 @@ private fun OrdersList(
             OrderCard(
                 order = order,
                 onClick = { onOrderClick(order) },
-                onTrackClick = { onTrackClick(order) }
+                onTrackClick = { onTrackClick(order) },
+                onReorderClick = { onReorderClick(order) },
+                onRateClick = { onRateClick(order) }
             )
         }
     }
@@ -221,7 +234,9 @@ private fun OrdersList(
 private fun OrderCard(
     order: Order,
     onClick: () -> Unit,
-    onTrackClick: () -> Unit
+    onTrackClick: () -> Unit,
+    onReorderClick: () -> Unit = {},
+    onRateClick: () -> Unit = {}
 ) {
     Card(
         modifier = Modifier
@@ -280,7 +295,7 @@ private fun OrderCard(
             ) {
                 if (order.status == OrderStatus.DELIVERED) {
                     OutlinedButton(
-                        onClick = { /* TODO: Reorder */ },
+                        onClick = onReorderClick,
                         modifier = Modifier.weight(1f)
                     ) {
                         Icon(
@@ -292,7 +307,7 @@ private fun OrderCard(
                         Text("Reorder")
                     }
                     OutlinedButton(
-                        onClick = { /* TODO: Rate */ },
+                        onClick = onRateClick,
                         modifier = Modifier.weight(1f)
                     ) {
                         Icon(

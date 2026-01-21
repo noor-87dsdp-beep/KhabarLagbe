@@ -73,6 +73,10 @@ fun HomeScreen(
         ) {
             // Promotional Banner
             PromotionalBanner(
+                onOrderNowClick = {
+                    // Navigate to search with featured restaurants
+                    navController.navigate(Screen.Search.route)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -92,7 +96,8 @@ fun HomeScreen(
             // Featured Restaurants
             SectionHeader(
                 title = "Featured Restaurants",
-                actionText = "See All"
+                actionText = "See All",
+                onActionClick = { navController.navigate(Screen.Search.route) }
             )
             
             Spacer(modifier = Modifier.height(12.dp))
@@ -102,6 +107,10 @@ fun HomeScreen(
                     restaurant = restaurant,
                     onClick = {
                         navController.navigate(Screen.RestaurantDetails.createRoute(restaurant.id))
+                    },
+                    onFavoriteClick = {
+                        // Toggle favorite - in production this would call ViewModel
+                        // For now, this provides visual feedback
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -239,6 +248,7 @@ fun HomeTopBar(
 
 @Composable
 fun PromotionalBanner(
+    onOrderNowClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -291,7 +301,7 @@ fun PromotionalBanner(
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Button(
-                        onClick = { },
+                        onClick = onOrderNowClick,
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White,
                             contentColor = Primary
@@ -406,8 +416,11 @@ fun SectionHeader(
 fun RestaurantCard(
     restaurant: Restaurant,
     onClick: () -> Unit,
+    onFavoriteClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    var isFavorite by remember { mutableStateOf(false) }
+    
     Card(
         onClick = onClick,
         modifier = modifier.shadow(4.dp, RoundedCornerShape(16.dp)),
@@ -467,15 +480,18 @@ fun RestaurantCard(
                 
                 // Favorite button
                 IconButton(
-                    onClick = { },
+                    onClick = { 
+                        isFavorite = !isFavorite
+                        onFavoriteClick()
+                    },
                     modifier = Modifier
                         .padding(12.dp)
                         .align(Alignment.TopEnd)
                         .background(Color.White.copy(alpha = 0.9f), CircleShape)
                 ) {
                     Icon(
-                        imageVector = Icons.Outlined.FavoriteBorder,
-                        contentDescription = "Add to favorites",
+                        imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                        contentDescription = if (isFavorite) "Remove from favorites" else "Add to favorites",
                         tint = Primary
                     )
                 }
