@@ -86,7 +86,7 @@ fun OrderCard(
             }
             if (order.items.size > 3) {
                 Text(
-                    text = "+${order.items.size - 3} more items",
+                    text = "+${order.items.size - 3} আরো আইটেম",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

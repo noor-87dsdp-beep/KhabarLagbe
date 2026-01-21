@@ -240,10 +240,15 @@ fun RatingSummaryCard(summary: ReviewsSummary) {
                     color = MaterialTheme.colorScheme.primary
                 )
                 Row {
+                    val fullStars = summary.averageRating.toInt()
+                    val hasHalfStar = (summary.averageRating - fullStars) >= 0.5f
                     repeat(5) { index ->
                         Icon(
-                            imageVector = if (index < summary.averageRating.toInt()) 
-                                Icons.Default.Star else Icons.Default.StarBorder,
+                            imageVector = when {
+                                index < fullStars -> Icons.Default.Star
+                                index == fullStars && hasHalfStar -> Icons.Default.StarHalf
+                                else -> Icons.Default.StarBorder
+                            },
                             contentDescription = null,
                             tint = Color(0xFFFFC107),
                             modifier = Modifier.size(24.dp)

@@ -70,7 +70,12 @@ class RestaurantSocketManager @Inject constructor(
         }
         
         this.restaurantId = restaurantId
-        val token = authRepository.getToken() ?: return
+        val token = authRepository.getToken()
+        
+        if (token == null) {
+            emitEvent(SocketEvent.Error("No authentication token available"))
+            return
+        }
         
         try {
             val options = IO.Options().apply {

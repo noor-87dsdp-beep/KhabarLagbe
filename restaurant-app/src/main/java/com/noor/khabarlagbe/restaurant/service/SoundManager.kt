@@ -10,6 +10,7 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -22,8 +23,7 @@ class SoundManager @Inject constructor(
     }
     
     private var mediaPlayer: MediaPlayer? = null
-    @Volatile
-    private var isPlaying = false
+    private val isPlaying = AtomicBoolean(false)
     
     private val vibrator: Vibrator by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -38,7 +38,7 @@ class SoundManager @Inject constructor(
     fun playNewOrderSound() {
         Log.d(TAG, "Playing new order sound")
         
-        if (isPlaying) {
+        if (isPlaying.get()) {
             stopSound()
         }
         
@@ -56,14 +56,14 @@ class SoundManager @Inject constructor(
                 isLooping = false
                 setOnPreparedListener { mp ->
                     mp.start()
-                    this@SoundManager.isPlaying = true
+                    this@SoundManager.isPlaying.set(true)
                 }
                 setOnCompletionListener {
-                    this@SoundManager.isPlaying = false
+                    this@SoundManager.isPlaying.set(false)
                     release()
                 }
                 setOnErrorListener { _, _, _ ->
-                    this@SoundManager.isPlaying = false
+                    this@SoundManager.isPlaying.set(false)
                     release()
                     true
                 }
@@ -74,7 +74,7 @@ class SoundManager @Inject constructor(
             vibrate()
         } catch (e: Exception) {
             Log.e(TAG, "Error playing sound", e)
-            isPlaying = false
+            isPlaying.set(false)
         }
     }
     
@@ -84,7 +84,7 @@ class SoundManager @Inject constructor(
         try {
             val notificationUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
             
-            MediaPlayer().apply {
+            val player = MediaPlayer().apply {
                 setAudioAttributes(
                     AudioAttributes.Builder()
                         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
@@ -97,6 +97,10 @@ class SoundManager @Inject constructor(
                 }
                 setOnCompletionListener { mp ->
                     mp.release()
+                }
+                setOnErrorListener { mp, _, _ ->
+                    mp.release()
+                    true
                 }
                 prepareAsync()
             }
@@ -145,7 +149,7 @@ class SoundManager @Inject constructor(
                 release()
             }
             mediaPlayer = null
-            isPlaying = false
+            isPlaying.set(false)
         } catch (e: Exception) {
             Log.e(TAG, "Error stopping sound", e)
         }
