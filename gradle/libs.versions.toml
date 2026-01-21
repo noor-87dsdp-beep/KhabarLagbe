@@ -66,6 +66,7 @@ coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coi
 mapbox-maps-android = { group = "com.mapbox.maps", name = "android", version.ref = "mapbox" }
 mapbox-maps-compose = { group = "com.mapbox.extension", name = "maps-compose", version.ref = "mapbox" }
 mapbox-navigation-android = { group = "com.mapbox.navigation", name = "android", version.ref = "mapboxNavigation" }
+mapbox-common = { group = "com.mapbox.common", name = "common", version.ref = "mapboxCommon" }
 
 # Coroutines
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
