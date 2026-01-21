@@ -60,4 +60,9 @@ sealed class Screen(val route: String) {
     data object ShareOrder : Screen("share_order/{orderId}") {
         fun createRoute(orderId: String) = "share_order/$orderId"
     }
+    
+    // Schedule
+    data object ScheduleOrder : Screen("schedule_order")
+    data object RecurringOrder : Screen("recurring_order")
+    data object MealPlan : Screen("meal_plan")
 }

@@ -33,6 +33,9 @@ import com.noor.khabarlagbe.presentation.social.GroupOrderScreen
 import com.noor.khabarlagbe.presentation.social.ReferralScreen
 import com.noor.khabarlagbe.presentation.social.FriendsFeedScreen
 import com.noor.khabarlagbe.presentation.social.ShareOrderScreen
+import com.noor.khabarlagbe.presentation.schedule.ScheduleOrderScreen
+import com.noor.khabarlagbe.presentation.schedule.RecurringOrderScreen
+import com.noor.khabarlagbe.presentation.schedule.MealPlanScreen
 
 @Composable
 fun NavGraph(
@@ -216,6 +219,19 @@ fun NavGraph(
                 navController = navController,
                 orderId = orderId
             )
+        }
+        
+        // Schedule
+        composable(Screen.ScheduleOrder.route) {
+            ScheduleOrderScreen(navController = navController)
+        }
+        
+        composable(Screen.RecurringOrder.route) {
+            RecurringOrderScreen(navController = navController)
+        }
+        
+        composable(Screen.MealPlan.route) {
+            MealPlanScreen(navController = navController)
         }
     }
 }
