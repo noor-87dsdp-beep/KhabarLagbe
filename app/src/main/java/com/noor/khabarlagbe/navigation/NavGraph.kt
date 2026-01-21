@@ -26,6 +26,9 @@ import com.noor.khabarlagbe.presentation.profile.edit.EditProfileScreen
 import com.noor.khabarlagbe.presentation.profile.addresses.AddressManagementScreen
 import com.noor.khabarlagbe.presentation.profile.favorites.FavoritesScreen
 import com.noor.khabarlagbe.presentation.search.SearchScreen
+import com.noor.khabarlagbe.presentation.wallet.WalletScreen
+import com.noor.khabarlagbe.presentation.wallet.AddMoneyScreen
+import com.noor.khabarlagbe.presentation.wallet.TransactionHistoryScreen
 
 @Composable
 fun NavGraph(
@@ -170,6 +173,19 @@ fun NavGraph(
         
         composable(Screen.Favorites.route) {
             FavoritesScreen(navController = navController)
+        }
+        
+        // Wallet
+        composable(Screen.Wallet.route) {
+            WalletScreen(navController = navController)
+        }
+        
+        composable(Screen.AddMoney.route) {
+            AddMoneyScreen(navController = navController)
+        }
+        
+        composable(Screen.TransactionHistory.route) {
+            TransactionHistoryScreen(navController = navController)
         }
     }
 }
