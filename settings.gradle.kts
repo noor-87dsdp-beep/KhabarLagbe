@@ -35,14 +35,7 @@ dependencyResolutionManagement {
                 // 2. local.properties (project-specific)
                 // 3. Environment variable (CI/CD)
                 val mapboxToken = providers.gradleProperty("MAPBOX_DOWNLOADS_TOKEN").orNull
-                    ?: run {
-                        val localProperties = java.util.Properties()
-                        val localPropertiesFile = File(rootDir, "local.properties")
-                        if (localPropertiesFile.exists()) {
-                            localPropertiesFile.inputStream().use { localProperties.load(it) }
-                        }
-                        localProperties.getProperty("MAPBOX_DOWNLOADS_TOKEN")
-                    }
+                    ?: localProperties.getProperty("MAPBOX_DOWNLOADS_TOKEN")
                     ?: providers.environmentVariable("MAPBOX_DOWNLOADS_TOKEN").orNull
                     ?: ""
                 
