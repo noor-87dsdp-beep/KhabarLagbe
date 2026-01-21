@@ -43,4 +43,8 @@ sealed class Screen(val route: String) {
     data object SavedAddresses : Screen("saved_addresses")
     data object Favorites : Screen("favorites")
     data object Settings : Screen("settings")
+    
+    // Rewards
+    data object Rewards : Screen("rewards")
+    data object PointsHistory : Screen("points_history")
 }
