@@ -112,11 +112,13 @@ dependencies {
     implementation(libs.coil.compose)
     
     // Mapbox Maps SDK for delivery tracking
-    // Setup: Add MAPBOX_DOWNLOADS_TOKEN to ~/.gradle/gradle.properties
-    implementation(libs.mapbox.maps.android)
-    implementation(libs.mapbox.maps.compose)
-    implementation(libs.mapbox.navigation.android)
-    implementation(libs.mapbox.common)
+    // IMPORTANT: Requires MAPBOX_DOWNLOADS_TOKEN in ~/.gradle/gradle.properties
+    // Get token from https://account.mapbox.com/access-tokens/
+    // Uncomment when token is configured:
+    // implementation(libs.mapbox.maps.android)
+    // implementation(libs.mapbox.maps.compose)
+    // implementation(libs.mapbox.navigation.android)
+    // implementation(libs.mapbox.common)
     
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)

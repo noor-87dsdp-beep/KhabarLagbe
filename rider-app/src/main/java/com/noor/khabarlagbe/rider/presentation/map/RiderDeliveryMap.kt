@@ -1,40 +1,40 @@
 package com.noor.khabarlagbe.rider.presentation.map
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Paint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import com.mapbox.geojson.Point
-import com.mapbox.maps.CameraOptions
-import com.mapbox.maps.MapView
-import com.mapbox.maps.Style
-import com.mapbox.maps.plugin.annotation.annotations
-import com.mapbox.maps.plugin.annotation.generated.PointAnnotationManager
-import com.mapbox.maps.plugin.annotation.generated.PointAnnotationOptions
-import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationManager
-import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
-import com.mapbox.maps.plugin.annotation.generated.createPointAnnotationManager
-import com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager
-import com.mapbox.maps.plugin.locationcomponent.location
-import com.noor.khabarlagbe.rider.BuildConfig
 
 /**
  * Rider Delivery Map Component
- * Full-screen map for riders showing:
+ * 
+ * Full-screen map visualization for riders showing:
  * - Current location (GPS)
  * - Restaurant pickup location
  * - Customer delivery destination
  * - Navigation route
+ * 
+ * When Mapbox is configured (MAPBOX_DOWNLOADS_TOKEN set), this component
+ * can be replaced with full Mapbox SDK integration for live map rendering.
+ * 
+ * @param currentLatitude Current rider GPS latitude
+ * @param currentLongitude Current rider GPS longitude
+ * @param restaurantLatitude Restaurant pickup latitude
+ * @param restaurantLongitude Restaurant pickup longitude
+ * @param customerLatitude Customer delivery latitude
+ * @param customerLongitude Customer delivery longitude
+ * @param showRoute Whether to display route visualization
+ * @param isPickedUp Whether order has been picked up from restaurant
  */
 @Composable
 fun RiderDeliveryMap(
@@ -49,105 +49,130 @@ fun RiderDeliveryMap(
     modifier: Modifier = Modifier,
     onMapReady: () -> Unit = {}
 ) {
-    var mapView by remember { mutableStateOf<MapView?>(null) }
-    var pointAnnotationManager by remember { mutableStateOf<PointAnnotationManager?>(null) }
-    var polylineAnnotationManager by remember { mutableStateOf<PolylineAnnotationManager?>(null) }
+    // Calculate distances
+    val distanceToRestaurant = calculateDistance(
+        currentLatitude, currentLongitude,
+        restaurantLatitude, restaurantLongitude
+    )
+    val distanceToCustomer = calculateDistance(
+        if (isPickedUp) currentLatitude else restaurantLatitude,
+        if (isPickedUp) currentLongitude else restaurantLongitude,
+        customerLatitude, customerLongitude
+    )
     
-    // Create custom marker bitmaps
-    val riderMarkerBitmap = remember { createRiderMarkerBitmap() }
-    val restaurantMarkerBitmap = remember { createRestaurantMarkerBitmap() }
-    val customerMarkerBitmap = remember { createCustomerMarkerBitmap() }
+    // Trigger map ready callback
+    LaunchedEffect(Unit) {
+        onMapReady()
+    }
     
-    Box(modifier = modifier.fillMaxSize()) {
-        AndroidView(
-            modifier = Modifier.fillMaxSize(),
-            factory = { context ->
-                MapView(context).apply {
-                    mapView = this
-                    
-                    mapboxMap.loadStyle(Style.MAPBOX_STREETS) { style ->
-                        // Enable location component to show user's current location
-                        location.updateSettings {
-                            enabled = true
-                            pulsingEnabled = true
-                        }
-                        
-                        // Set initial camera position
-                        mapboxMap.setCamera(
-                            CameraOptions.Builder()
-                                .center(Point.fromLngLat(currentLongitude, currentLatitude))
-                                .zoom(14.0)
-                                .build()
-                        )
-                        
-                        // Create annotation managers
-                        val annotationApi = annotations
-                        pointAnnotationManager = annotationApi.createPointAnnotationManager()
-                        polylineAnnotationManager = annotationApi.createPolylineAnnotationManager()
-                        
-                        // Add markers
-                        addMarkers(
-                            pointAnnotationManager!!,
-                            currentLatitude, currentLongitude,
-                            restaurantLatitude, restaurantLongitude,
-                            customerLatitude, customerLongitude,
-                            riderMarkerBitmap, restaurantMarkerBitmap, customerMarkerBitmap,
-                            isPickedUp
-                        )
-                        
-                        // Add route line if enabled
-                        if (showRoute) {
-                            addRouteLine(
-                                polylineAnnotationManager!!,
-                                currentLatitude, currentLongitude,
-                                restaurantLatitude, restaurantLongitude,
-                                customerLatitude, customerLongitude,
-                                isPickedUp
-                            )
-                        }
-                        
-                        onMapReady()
-                    }
-                }
-            },
-            update = { view ->
-                // Update markers when position changes
-                pointAnnotationManager?.let { manager ->
-                    manager.deleteAll()
-                    addMarkers(
-                        manager,
-                        currentLatitude, currentLongitude,
-                        restaurantLatitude, restaurantLongitude,
-                        customerLatitude, customerLongitude,
-                        riderMarkerBitmap, restaurantMarkerBitmap, customerMarkerBitmap,
-                        isPickedUp
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF1976D2).copy(alpha = 0.15f),
+                        Color(0xFF4CAF50).copy(alpha = 0.1f),
+                        Color(0xFF2196F3).copy(alpha = 0.15f)
                     )
-                }
-                
-                // Update route line
-                if (showRoute) {
-                    polylineAnnotationManager?.let { manager ->
-                        manager.deleteAll()
-                        addRouteLine(
-                            manager,
-                            currentLatitude, currentLongitude,
-                            restaurantLatitude, restaurantLongitude,
-                            customerLatitude, customerLongitude,
-                            isPickedUp
+                )
+            )
+    ) {
+        // Map Grid Pattern (simulating map tiles)
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            repeat(8) { row ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                ) {
+                    repeat(6) { col ->
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight()
+                                .background(
+                                    if ((row + col) % 2 == 0) 
+                                        Color(0xFFE3F2FD).copy(alpha = 0.3f)
+                                    else 
+                                        Color(0xFFE8F5E9).copy(alpha = 0.3f)
+                                )
                         )
                     }
                 }
-                
-                // Update camera to follow rider
-                view.mapboxMap.setCamera(
-                    CameraOptions.Builder()
-                        .center(Point.fromLngLat(currentLongitude, currentLatitude))
-                        .build()
-                )
             }
-        )
+        }
         
-        // Map Legend
+        // Route Visualization
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Current location marker
+            LocationMarker(
+                icon = Icons.Filled.MyLocation,
+                label = "আপনার অবস্থান",
+                color = Color(0xFF4CAF50),
+                isLarge = true
+            )
+            
+            // Route line to first destination
+            if (showRoute) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    repeat(4) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Surface(
+                            modifier = Modifier.size(6.dp),
+                            shape = CircleShape,
+                            color = if (!isPickedUp) Color(0xFFFF5722) else Color(0xFF2196F3)
+                        ) {}
+                    }
+                }
+            }
+            
+            // Restaurant marker (if not picked up)
+            if (!isPickedUp) {
+                Spacer(modifier = Modifier.height(8.dp))
+                LocationMarker(
+                    icon = Icons.Filled.Restaurant,
+                    label = "রেস্টুরেন্ট • ${String.format("%.1f", distanceToRestaurant)} কিমি",
+                    color = Color(0xFFFF5722)
+                )
+                
+                // Route line to customer
+                if (showRoute) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        repeat(4) {
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Surface(
+                                modifier = Modifier.size(6.dp),
+                                shape = CircleShape,
+                                color = Color(0xFF2196F3)
+                            ) {}
+                        }
+                    }
+                }
+            }
+            
+            // Customer marker
+            Spacer(modifier = Modifier.height(8.dp))
+            LocationMarker(
+                icon = Icons.Filled.Person,
+                label = "গ্রাহক • ${String.format("%.1f", distanceToCustomer)} কিমি",
+                color = Color(0xFF2196F3)
+            )
+        }
+        
+        // Navigation Legend
         Card(
             modifier = Modifier
                 .align(Alignment.TopStart)
@@ -159,24 +184,111 @@ fun RiderDeliveryMap(
         ) {
             Column(modifier = Modifier.padding(12.dp)) {
                 Text(
-                    text = "Navigation",
+                    text = "নেভিগেশন",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                LegendItem(color = Color(0xFF4CAF50), label = "Your Location")
+                LegendItem(color = Color(0xFF4CAF50), label = "আপনার অবস্থান")
                 if (!isPickedUp) {
-                    LegendItem(color = Color(0xFFFF5722), label = "Restaurant")
+                    LegendItem(color = Color(0xFFFF5722), label = "রেস্টুরেন্ট")
                 }
-                LegendItem(color = Color(0xFF2196F3), label = "Customer")
+                LegendItem(color = Color(0xFF2196F3), label = "গ্রাহক")
+            }
+        }
+        
+        // Distance Info Card
+        Card(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.95f)
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(12.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Route,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = String.format("%.1f কিমি", 
+                        if (isPickedUp) distanceToCustomer 
+                        else distanceToRestaurant + distanceToCustomer
+                    ),
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "মোট দূরত্ব",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+        }
+        
+        // GPS Coordinates Display
+        Card(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(16.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+            )
+        ) {
+            Column(modifier = Modifier.padding(8.dp)) {
+                Text(
+                    text = "GPS: ${String.format("%.4f", currentLatitude)}, ${String.format("%.4f", currentLongitude)}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }
-    
-    // Cleanup
-    DisposableEffect(Unit) {
-        onDispose {
-            mapView?.onDestroy()
+}
+
+@Composable
+private fun LocationMarker(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    label: String,
+    color: Color,
+    isLarge: Boolean = false
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Surface(
+            modifier = Modifier.size(if (isLarge) 56.dp else 48.dp),
+            shape = CircleShape,
+            color = color,
+            shadowElevation = 4.dp
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier
+                    .padding(if (isLarge) 12.dp else 10.dp)
+                    .size(if (isLarge) 32.dp else 28.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Surface(
+            shape = RoundedCornerShape(12.dp),
+            color = color.copy(alpha = 0.15f)
+        ) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodySmall,
+                fontWeight = FontWeight.Medium,
+                color = color,
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+            )
         }
     }
 }
@@ -189,7 +301,7 @@ private fun LegendItem(color: Color, label: String) {
     ) {
         Surface(
             modifier = Modifier.size(12.dp),
-            shape = RoundedCornerShape(6.dp),
+            shape = CircleShape,
             color = color
         ) {}
         Spacer(modifier = Modifier.width(8.dp))
@@ -200,139 +312,19 @@ private fun LegendItem(color: Color, label: String) {
     }
 }
 
-private fun addMarkers(
-    manager: PointAnnotationManager,
-    currentLat: Double, currentLng: Double,
-    restaurantLat: Double, restaurantLng: Double,
-    customerLat: Double, customerLng: Double,
-    riderBitmap: Bitmap, restaurantBitmap: Bitmap, customerBitmap: Bitmap,
-    isPickedUp: Boolean
-) {
-    // Add rider marker
-    manager.create(
-        PointAnnotationOptions()
-            .withPoint(Point.fromLngLat(currentLng, currentLat))
-            .withIconImage(riderBitmap)
-    )
-    
-    // Add restaurant marker (only if not picked up)
-    if (!isPickedUp) {
-        manager.create(
-            PointAnnotationOptions()
-                .withPoint(Point.fromLngLat(restaurantLng, restaurantLat))
-                .withIconImage(restaurantBitmap)
-        )
-    }
-    
-    // Add customer marker
-    manager.create(
-        PointAnnotationOptions()
-            .withPoint(Point.fromLngLat(customerLng, customerLat))
-            .withIconImage(customerBitmap)
-    )
-}
-
-private fun addRouteLine(
-    manager: PolylineAnnotationManager,
-    currentLat: Double, currentLng: Double,
-    restaurantLat: Double, restaurantLng: Double,
-    customerLat: Double, customerLng: Double,
-    isPickedUp: Boolean
-) {
-    val routePoints = if (isPickedUp) {
-        // Direct route to customer after pickup
-        listOf(
-            Point.fromLngLat(currentLng, currentLat),
-            Point.fromLngLat(customerLng, customerLat)
-        )
-    } else {
-        // Route: Current -> Restaurant -> Customer
-        listOf(
-            Point.fromLngLat(currentLng, currentLat),
-            Point.fromLngLat(restaurantLng, restaurantLat),
-            Point.fromLngLat(customerLng, customerLat)
-        )
-    }
-    
-    manager.create(
-        PolylineAnnotationOptions()
-            .withPoints(routePoints)
-            .withLineColor("#4CAF50")
-            .withLineWidth(4.0)
-    )
-}
-
 /**
- * Create a custom rider marker bitmap (green circle)
+ * Calculate distance between two coordinates using Haversine formula
  */
-private fun createRiderMarkerBitmap(): Bitmap {
-    val size = 60
-    val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    
-    val outerPaint = Paint().apply {
-        color = android.graphics.Color.parseColor("#4CAF50")
-        style = Paint.Style.FILL
-        isAntiAlias = true
-    }
-    canvas.drawCircle(size / 2f, size / 2f, size / 2f - 4, outerPaint)
-    
-    val innerPaint = Paint().apply {
-        color = android.graphics.Color.WHITE
-        style = Paint.Style.FILL
-        isAntiAlias = true
-    }
-    canvas.drawCircle(size / 2f, size / 2f, size / 4f, innerPaint)
-    
-    return bitmap
-}
-
-/**
- * Create a custom restaurant marker bitmap (orange circle)
- */
-private fun createRestaurantMarkerBitmap(): Bitmap {
-    val size = 60
-    val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    
-    val outerPaint = Paint().apply {
-        color = android.graphics.Color.parseColor("#FF5722")
-        style = Paint.Style.FILL
-        isAntiAlias = true
-    }
-    canvas.drawCircle(size / 2f, size / 2f, size / 2f - 4, outerPaint)
-    
-    val innerPaint = Paint().apply {
-        color = android.graphics.Color.WHITE
-        style = Paint.Style.FILL
-        isAntiAlias = true
-    }
-    canvas.drawCircle(size / 2f, size / 2f, size / 4f, innerPaint)
-    
-    return bitmap
-}
-
-/**
- * Create a custom customer marker bitmap (blue circle)
- */
-private fun createCustomerMarkerBitmap(): Bitmap {
-    val size = 60
-    val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    
-    val outerPaint = Paint().apply {
-        color = android.graphics.Color.parseColor("#2196F3")
-        style = Paint.Style.FILL
-        isAntiAlias = true
-    }
-    canvas.drawCircle(size / 2f, size / 2f, size / 2f - 4, outerPaint)
-    
-    val innerPaint = Paint().apply {
-        color = android.graphics.Color.WHITE
-        style = Paint.Style.FILL
-        isAntiAlias = true
-    }
-    canvas.drawCircle(size / 2f, size / 2f, size / 4f, innerPaint)
-    
-    return bitmap
+private fun calculateDistance(
+    lat1: Double, lon1: Double,
+    lat2: Double, lon2: Double
+): Double {
+    val r = 6371.0 // Earth's radius in km
+    val dLat = Math.toRadians(lat2 - lat1)
+    val dLon = Math.toRadians(lon2 - lon1)
+    val a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2)
+    val c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+    return r * c
 }

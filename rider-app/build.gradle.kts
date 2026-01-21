@@ -110,10 +110,13 @@ dependencies {
     implementation(libs.coil.compose)
     
     // Mapbox Maps SDK for delivery tracking and navigation
-    implementation(libs.mapbox.maps.android)
-    implementation(libs.mapbox.maps.compose)
-    implementation(libs.mapbox.navigation.android)
-    implementation(libs.mapbox.common)
+    // IMPORTANT: Requires MAPBOX_DOWNLOADS_TOKEN in ~/.gradle/gradle.properties
+    // Get token from https://account.mapbox.com/access-tokens/
+    // Uncomment when token is configured:
+    // implementation(libs.mapbox.maps.android)
+    // implementation(libs.mapbox.maps.compose)
+    // implementation(libs.mapbox.navigation.android)
+    // implementation(libs.mapbox.common)
     
     // Google Play Services Location (for GPS tracking)
     implementation(libs.play.services.location)
