@@ -31,9 +31,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         
-        // Mapbox tokens from local.properties or environment variables
-        val mapboxPublicToken = localProperties.getProperty("MAPBOX_ACCESS_TOKEN")
-            ?: providers.gradleProperty("MAPBOX_ACCESS_TOKEN").orNull
+        // Mapbox tokens with priority: gradle.properties > local.properties > env var
+        val mapboxPublicToken = providers.gradleProperty("MAPBOX_ACCESS_TOKEN").orNull
+            ?: localProperties.getProperty("MAPBOX_ACCESS_TOKEN")
             ?: providers.environmentVariable("MAPBOX_ACCESS_TOKEN").orNull
             ?: "pk.mapbox_public_token_placeholder"
         

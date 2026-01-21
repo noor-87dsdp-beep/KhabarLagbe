@@ -380,6 +380,20 @@ cd admin-panel && npm run build
 - Android SDK 35
 - Gradle 8.13
 
+### 🔑 Mapbox Setup (Required)
+
+This project uses Mapbox for maps and navigation. **You must configure authentication before building:**
+
+1. Get tokens from https://account.mapbox.com/access-tokens/
+2. Add to `~/.gradle/gradle.properties`:
+   ```properties
+   MAPBOX_ACCESS_TOKEN=pk.your_token
+   MAPBOX_DOWNLOADS_TOKEN=sk.your_token
+   ```
+3. Build: `./gradlew :app:assembleDebug`
+
+📖 **Full guide:** [MAPBOX_AUTHENTICATION_GUIDE.md](./MAPBOX_AUTHENTICATION_GUIDE.md)
+
 ### Setup Instructions
 
 1. **Clone the repository**

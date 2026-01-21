@@ -24,28 +24,52 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        
         // Mapbox SDK repository
         maven {
             url = uri("https://api.mapbox.com/downloads/v2/releases/maven")
             credentials {
                 username = "mapbox"
-                // Validate Mapbox token before attempting to use repository
-                val mapboxToken = localProperties.getProperty("MAPBOX_DOWNLOADS_TOKEN")
-                    ?: providers.gradleProperty("MAPBOX_DOWNLOADS_TOKEN").orNull
+                // Read token from multiple sources in priority order:
+                // 1. ~/.gradle/gradle.properties (RECOMMENDED - secure & persistent)
+                // 2. local.properties (project-specific)
+                // 3. Environment variable (CI/CD)
+                val mapboxToken = providers.gradleProperty("MAPBOX_DOWNLOADS_TOKEN").orNull
+                    ?: localProperties.getProperty("MAPBOX_DOWNLOADS_TOKEN")
                     ?: providers.environmentVariable("MAPBOX_DOWNLOADS_TOKEN").orNull
                     ?: ""
                 
-                if (mapboxToken.isEmpty()) {
-                    logger.warn("⚠️  MAPBOX_DOWNLOADS_TOKEN not found!")
-                    logger.warn("⚠️  Mapbox dependencies will fail to download.")
-                    logger.warn("⚠️  See MAPBOX_SETUP.md for configuration instructions.")
-                } else if (!mapboxToken.startsWith("sk.")) {
-                    logger.warn("⚠️  MAPBOX_DOWNLOADS_TOKEN appears to be invalid!")
-                    logger.warn("⚠️  Secret tokens should start with 'sk.' prefix")
-                    logger.warn("⚠️  Please verify your token in local.properties")
-                }
-                
                 password = mapboxToken
+                
+                // Validation with clearer error messages
+                if (mapboxToken.isEmpty()) {
+                    logger.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+                    logger.error("❌ MAPBOX_DOWNLOADS_TOKEN NOT FOUND!")
+                    logger.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+                    logger.error("")
+                    logger.error("📍 QUICK FIX - Add to ~/.gradle/gradle.properties:")
+                    logger.error("   MAPBOX_DOWNLOADS_TOKEN=sk.your_secret_token_here")
+                    logger.error("")
+                    logger.error("📖 Get your token: https://account.mapbox.com/access-tokens/")
+                    logger.error("   • Click 'Create a token'")
+                    logger.error("   • Enable 'DOWNLOADS:READ' scope")
+                    logger.error("   • Copy the token (starts with sk.)")
+                    logger.error("")
+                    logger.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+                } else if (!mapboxToken.startsWith("sk.")) {
+                    logger.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+                    logger.error("❌ INVALID MAPBOX_DOWNLOADS_TOKEN!")
+                    logger.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+                    logger.error("")
+                    logger.error("⚠️  Secret tokens must start with 'sk.' prefix")
+                    logger.error("⚠️  You might be using a public token (pk.) instead")
+                    logger.error("")
+                    logger.error("📖 Get correct token: https://account.mapbox.com/access-tokens/")
+                    logger.error("")
+                    logger.error("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+                } else {
+                    logger.info("✅ Mapbox authentication configured successfully")
+                }
             }
             authentication {
                 create<BasicAuthentication>("basic")
