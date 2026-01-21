@@ -26,6 +26,21 @@ import com.noor.khabarlagbe.presentation.profile.edit.EditProfileScreen
 import com.noor.khabarlagbe.presentation.profile.addresses.AddressManagementScreen
 import com.noor.khabarlagbe.presentation.profile.favorites.FavoritesScreen
 import com.noor.khabarlagbe.presentation.search.SearchScreen
+import com.noor.khabarlagbe.presentation.wallet.WalletScreen
+import com.noor.khabarlagbe.presentation.wallet.AddMoneyScreen
+import com.noor.khabarlagbe.presentation.wallet.TransactionHistoryScreen
+import com.noor.khabarlagbe.presentation.social.GroupOrderScreen
+import com.noor.khabarlagbe.presentation.social.ReferralScreen
+import com.noor.khabarlagbe.presentation.social.FriendsFeedScreen
+import com.noor.khabarlagbe.presentation.social.ShareOrderScreen
+import com.noor.khabarlagbe.presentation.schedule.ScheduleOrderScreen
+import com.noor.khabarlagbe.presentation.schedule.RecurringOrderScreen
+import com.noor.khabarlagbe.presentation.schedule.MealPlanScreen
+import com.noor.khabarlagbe.presentation.ai.SmartRecommendationsScreen
+import com.noor.khabarlagbe.presentation.ai.VoiceOrderScreen
+import com.noor.khabarlagbe.presentation.support.HelpCenterScreen
+import com.noor.khabarlagbe.presentation.support.LiveChatScreen
+import com.noor.khabarlagbe.presentation.support.ReportIssueScreen
 
 @Composable
 fun NavGraph(
@@ -170,6 +185,93 @@ fun NavGraph(
         
         composable(Screen.Favorites.route) {
             FavoritesScreen(navController = navController)
+        }
+        
+        // Wallet
+        composable(Screen.Wallet.route) {
+            WalletScreen(navController = navController)
+        }
+        
+        composable(Screen.AddMoney.route) {
+            AddMoneyScreen(navController = navController)
+        }
+        
+        composable(Screen.TransactionHistory.route) {
+            TransactionHistoryScreen(navController = navController)
+        }
+        
+        // Social
+        composable(Screen.GroupOrder.route) {
+            GroupOrderScreen(navController = navController)
+        }
+        
+        composable(Screen.Referral.route) {
+            ReferralScreen(navController = navController)
+        }
+        
+        composable(Screen.FriendsFeed.route) {
+            FriendsFeedScreen(navController = navController)
+        }
+        
+        composable(
+            route = Screen.ShareOrder.route,
+            arguments = listOf(
+                navArgument("orderId") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val orderId = backStackEntry.arguments?.getString("orderId")
+            ShareOrderScreen(
+                navController = navController,
+                orderId = orderId
+            )
+        }
+        
+        // Schedule
+        composable(Screen.ScheduleOrder.route) {
+            ScheduleOrderScreen(navController = navController)
+        }
+        
+        composable(Screen.RecurringOrder.route) {
+            RecurringOrderScreen(navController = navController)
+        }
+        
+        composable(Screen.MealPlan.route) {
+            MealPlanScreen(navController = navController)
+        }
+        
+        // AI Features
+        composable(Screen.SmartRecommendations.route) {
+            SmartRecommendationsScreen(navController = navController)
+        }
+        
+        composable(Screen.VoiceOrder.route) {
+            VoiceOrderScreen(navController = navController)
+        }
+        
+        // Support
+        composable(Screen.HelpCenter.route) {
+            HelpCenterScreen(navController = navController)
+        }
+        
+        composable(Screen.LiveChat.route) {
+            LiveChatScreen(navController = navController)
+        }
+        
+        composable(
+            route = Screen.ReportIssue.route,
+            arguments = listOf(
+                navArgument("orderId") { 
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ) { backStackEntry ->
+            val orderId = backStackEntry.arguments?.getString("orderId")?.takeIf { it != "none" }
+            ReportIssueScreen(
+                navController = navController,
+                orderId = orderId
+            )
         }
     }
 }

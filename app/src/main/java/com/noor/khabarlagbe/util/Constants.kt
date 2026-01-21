@@ -137,4 +137,7 @@ object Constants {
     const val MIN_PASSWORD_LENGTH = 6
     const val MIN_NAME_LENGTH = 2
     const val BD_PHONE_PATTERN = "^(\\+?88)?01[3-9]\\d{8}$"
+    
+    // Wallet
+    const val MIN_TOP_UP_AMOUNT = 100.0
 }

@@ -1,6 +1,5 @@
 package com.noor.khabarlagbe.restaurant.presentation.dashboard
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -8,37 +7,77 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.noor.khabarlagbe.restaurant.domain.model.Order
+import com.noor.khabarlagbe.restaurant.domain.model.RestaurantStats
+import com.noor.khabarlagbe.restaurant.presentation.components.OrderCard
+import com.noor.khabarlagbe.restaurant.presentation.components.StatCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen(
-    navController: NavController
+fun RestaurantDashboardScreen(
+    onNavigateToOrders: () -> Unit,
+    onNavigateToMenu: () -> Unit,
+    onNavigateToReports: () -> Unit,
+    onNavigateToSettings: () -> Unit,
+    onOrderClick: (String) -> Unit,
+    viewModel: RestaurantDashboardViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val isOpen by viewModel.isOpen.collectAsState()
+    val isBusy by viewModel.isBusy.collectAsState()
+    
     var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("নতুন (3)", "প্রস্তুত হচ্ছে (2)", "প্রস্তুত (1)")
+    val tabs = listOf("নতুন", "প্রস্তুত হচ্ছে", "প্রস্তুত")
+    var selectedNavItem by remember { mutableStateOf(0) }
     
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("KhabarLagbe Restaurant", style = MaterialTheme.typography.titleLarge) },
-                actions = {
-                    IconButton(onClick = { /* Navigate to notifications */ }) {
-                        Badge(
-                            containerColor = Color.Red,
-                            contentColor = Color.White
-                        ) {
-                            Text("3")
-                        }
-                        Icon(Icons.Default.Notifications, contentDescription = "Notifications")
+                title = { 
+                    Column {
+                        Text("KhabarLagbe Restaurant", style = MaterialTheme.typography.titleLarge) 
+                        Text(
+                            text = if (isOpen) "🟢 খোলা" else "🔴 বন্ধ",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = if (isOpen) Color(0xFF4CAF50) else Color.Gray
+                        )
                     }
-                    IconButton(onClick = { /* Navigate to settings */ }) {
+                },
+                actions = {
+                    // Open/Close toggle
+                    Switch(
+                        checked = isOpen,
+                        onCheckedChange = { viewModel.toggleOpenStatus() },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Color(0xFF4CAF50),
+                            checkedTrackColor = Color(0xFF4CAF50).copy(alpha = 0.5f)
+                        )
+                    )
+                    IconButton(onClick = { /* Navigate to notifications */ }) {
+                        BadgedBox(
+                            badge = {
+                                val newOrderCount = when (uiState) {
+                                    is DashboardUiState.Success -> (uiState as DashboardUiState.Success).newOrders.size
+                                    else -> 0
+                                }
+                                if (newOrderCount > 0) {
+                                    Badge { Text("$newOrderCount") }
+                                }
+                            }
+                        ) {
+                            Icon(Icons.Default.Notifications, contentDescription = "Notifications")
+                        }
+                    }
+                    IconButton(onClick = onNavigateToSettings) {
                         Icon(Icons.Default.Settings, contentDescription = "Settings")
                     }
                 }
@@ -47,85 +86,327 @@ fun DashboardScreen(
         bottomBar = {
             NavigationBar {
                 NavigationBarItem(
-                    selected = true,
-                    onClick = { },
+                    selected = selectedNavItem == 0,
+                    onClick = { selectedNavItem = 0 },
                     icon = { Icon(Icons.Default.Dashboard, contentDescription = "Dashboard") },
                     label = { Text("ড্যাশবোর্ড") }
                 )
                 NavigationBarItem(
-                    selected = false,
-                    onClick = { /* Navigate to orders */ },
-                    icon = { Icon(Icons.Default.Receipt, contentDescription = "Orders") },
+                    selected = selectedNavItem == 1,
+                    onClick = { 
+                        selectedNavItem = 1
+                        onNavigateToOrders()
+                    },
+                    icon = { 
+                        BadgedBox(
+                            badge = {
+                                val pendingCount = when (uiState) {
+                                    is DashboardUiState.Success -> (uiState as DashboardUiState.Success).newOrders.size
+                                    else -> 0
+                                }
+                                if (pendingCount > 0) {
+                                    Badge { Text("$pendingCount") }
+                                }
+                            }
+                        ) {
+                            Icon(Icons.Default.Receipt, contentDescription = "Orders")
+                        }
+                    },
                     label = { Text("অর্ডার") }
                 )
                 NavigationBarItem(
-                    selected = false,
-                    onClick = { /* Navigate to menu */ },
+                    selected = selectedNavItem == 2,
+                    onClick = { 
+                        selectedNavItem = 2
+                        onNavigateToMenu()
+                    },
                     icon = { Icon(Icons.Default.Restaurant, contentDescription = "Menu") },
                     label = { Text("মেনু") }
                 )
                 NavigationBarItem(
-                    selected = false,
-                    onClick = { /* Navigate to analytics */ },
+                    selected = selectedNavItem == 3,
+                    onClick = { 
+                        selectedNavItem = 3
+                        onNavigateToReports()
+                    },
                     icon = { Icon(Icons.Default.Analytics, contentDescription = "Analytics") },
                     label = { Text("বিশ্লেষণ") }
                 )
             }
         }
     ) { padding ->
-        LazyColumn(
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = { viewModel.refresh() },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Today's Stats
-            item {
-                TodayStatsSection()
-            }
-            
-            // Tab selector
-            item {
-                ScrollableTabRow(
-                    selectedTabIndex = selectedTab,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    tabs.forEachIndexed { index, title ->
-                        Tab(
-                            selected = selectedTab == index,
-                            onClick = { selectedTab = index },
-                            text = { Text(title) }
-                        )
+            when (uiState) {
+                is DashboardUiState.Loading -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
                     }
                 }
-            }
-            
-            // Orders based on selected tab
-            items(3) { index ->
-                OrderCard(
-                    orderNumber = "#${5678 + index}",
-                    customerName = "গ্রাহক ${index + 1}",
-                    items = listOf("বিরিয়ানি x2", "চিকেন কারি x1"),
-                    totalAmount = "৳৬৮৫",
-                    time = "${5 + index} মিনিট আগে",
-                    status = when (selectedTab) {
-                        0 -> OrderStatus.NEW
-                        1 -> OrderStatus.PREPARING
-                        else -> OrderStatus.READY
-                    },
-                    onAccept = { /* Handle accept */ },
-                    onReject = { /* Handle reject */ },
-                    onMarkPreparing = { /* Handle mark preparing */ },
-                    onMarkReady = { /* Handle mark ready */ }
-                )
+                is DashboardUiState.Success -> {
+                    val state = uiState as DashboardUiState.Success
+                    DashboardContent(
+                        stats = state.stats,
+                        newOrders = state.newOrders,
+                        preparingOrders = state.preparingOrders,
+                        readyOrders = state.readyOrders,
+                        selectedTab = selectedTab,
+                        onTabSelected = { selectedTab = it },
+                        tabs = tabs,
+                        isBusy = isBusy,
+                        onToggleBusy = { viewModel.toggleBusyMode() },
+                        onAcceptOrder = { viewModel.acceptOrder(it) },
+                        onRejectOrder = { orderId, reason -> viewModel.rejectOrder(orderId, reason) },
+                        onMarkPreparing = { viewModel.markPreparing(it) },
+                        onMarkReady = { viewModel.markReady(it) },
+                        onOrderClick = onOrderClick
+                    )
+                }
+                is DashboardUiState.Error -> {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                text = (uiState as DashboardUiState.Error).message,
+                                color = MaterialTheme.colorScheme.error
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Button(onClick = { viewModel.loadDashboard() }) {
+                                Text("আবার চেষ্টা করুন")
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-fun TodayStatsSection() {
+fun DashboardContent(
+    stats: RestaurantStats,
+    newOrders: List<Order>,
+    preparingOrders: List<Order>,
+    readyOrders: List<Order>,
+    selectedTab: Int,
+    onTabSelected: (Int) -> Unit,
+    tabs: List<String>,
+    isBusy: Boolean,
+    onToggleBusy: () -> Unit,
+    onAcceptOrder: (String) -> Unit,
+    onRejectOrder: (String, String) -> Unit,
+    onMarkPreparing: (String) -> Unit,
+    onMarkReady: (String) -> Unit,
+    onOrderClick: (String) -> Unit
+) {
+    var showRejectDialog by remember { mutableStateOf<String?>(null) }
+    var rejectReason by remember { mutableStateOf("") }
+    
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        // Busy mode alert
+        if (isBusy) {
+            item {
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFFFFF3E0)
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                Icons.Default.Timer,
+                                contentDescription = null,
+                                tint = Color(0xFFFF9800)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Column {
+                                Text(
+                                    text = "ব্যস্ত মোড চালু",
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFFE65100)
+                                )
+                                Text(
+                                    text = "অর্ডারে অতিরিক্ত সময় লাগছে",
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+                        }
+                        TextButton(onClick = onToggleBusy) {
+                            Text("বন্ধ করুন")
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Today's Stats
+        item {
+            TodayStatsSection(stats = stats)
+        }
+        
+        // Quick stats row
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                StatCard(
+                    title = "অপেক্ষমান",
+                    value = "${stats.pendingOrders}",
+                    icon = Icons.Default.Pending,
+                    color = Color(0xFF2196F3),
+                    modifier = Modifier.weight(1f)
+                )
+                StatCard(
+                    title = "প্রস্তুত হচ্ছে",
+                    value = "${stats.preparingOrders}",
+                    icon = Icons.Default.Restaurant,
+                    color = Color(0xFFFF9800),
+                    modifier = Modifier.weight(1f)
+                )
+                StatCard(
+                    title = "প্রস্তুত",
+                    value = "${stats.readyOrders}",
+                    icon = Icons.Default.CheckCircle,
+                    color = Color(0xFF4CAF50),
+                    modifier = Modifier.weight(1f)
+                )
+            }
+        }
+        
+        // Tab selector
+        item {
+            TabRow(
+                selectedTabIndex = selectedTab,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                tabs.forEachIndexed { index, title ->
+                    val count = when (index) {
+                        0 -> newOrders.size
+                        1 -> preparingOrders.size
+                        2 -> readyOrders.size
+                        else -> 0
+                    }
+                    Tab(
+                        selected = selectedTab == index,
+                        onClick = { onTabSelected(index) },
+                        text = { Text("$title ($count)") }
+                    )
+                }
+            }
+        }
+        
+        // Orders based on selected tab
+        val orders = when (selectedTab) {
+            0 -> newOrders
+            1 -> preparingOrders
+            2 -> readyOrders
+            else -> emptyList()
+        }
+        
+        if (orders.isEmpty()) {
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(32.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Icon(
+                            Icons.Default.Inbox,
+                            contentDescription = null,
+                            modifier = Modifier.size(48.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "কোনো অর্ডার নেই",
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+        } else {
+            items(orders, key = { it.id }) { order ->
+                OrderCard(
+                    order = order,
+                    onAccept = { onAcceptOrder(order.id) },
+                    onReject = { showRejectDialog = order.id },
+                    onMarkPreparing = { onMarkPreparing(order.id) },
+                    onMarkReady = { onMarkReady(order.id) },
+                    onClick = { onOrderClick(order.id) }
+                )
+            }
+        }
+        
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
+    
+    // Reject dialog
+    if (showRejectDialog != null) {
+        AlertDialog(
+            onDismissRequest = { showRejectDialog = null },
+            title = { Text("অর্ডার বাতিল") },
+            text = {
+                Column {
+                    Text("অর্ডার বাতিলের কারণ লিখুন:")
+                    Spacer(modifier = Modifier.height(16.dp))
+                    OutlinedTextField(
+                        value = rejectReason,
+                        onValueChange = { rejectReason = it },
+                        label = { Text("কারণ") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        onRejectOrder(showRejectDialog!!, rejectReason)
+                        showRejectDialog = null
+                        rejectReason = ""
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error
+                    )
+                ) {
+                    Text("বাতিল করুন")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { 
+                    showRejectDialog = null
+                    rejectReason = ""
+                }) {
+                    Text("পিছনে")
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun TodayStatsSection(stats: RestaurantStats) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp)
@@ -143,9 +424,24 @@ fun TodayStatsSection() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                StatItem(label = "অর্ডার", value = "৪৮", icon = Icons.Default.Receipt, color = Color(0xFF2196F3))
-                StatItem(label = "আয়", value = "৳২৫,৬৮০", icon = Icons.Default.AttachMoney, color = Color(0xFF4CAF50))
-                StatItem(label = "রেটিং", value = "৪.৭", icon = Icons.Default.Star, color = Color(0xFFFFC107))
+                StatItem(
+                    label = "অর্ডার",
+                    value = "${stats.todayOrders}",
+                    icon = Icons.Default.Receipt,
+                    color = Color(0xFF2196F3)
+                )
+                StatItem(
+                    label = "আয়",
+                    value = "৳${stats.todayRevenue.toInt()}",
+                    icon = Icons.Default.AttachMoney,
+                    color = Color(0xFF4CAF50)
+                )
+                StatItem(
+                    label = "রেটিং",
+                    value = "%.1f".format(stats.averageRating),
+                    icon = Icons.Default.Star,
+                    color = Color(0xFFFFC107)
+                )
             }
         }
     }
@@ -178,142 +474,5 @@ fun StatItem(
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-    }
-}
-
-enum class OrderStatus {
-    NEW, PREPARING, READY, COMPLETED
-}
-
-@Composable
-fun OrderCard(
-    orderNumber: String,
-    customerName: String,
-    items: List<String>,
-    totalAmount: String,
-    time: String,
-    status: OrderStatus,
-    onAccept: () -> Unit,
-    onReject: () -> Unit,
-    onMarkPreparing: () -> Unit,
-    onMarkReady: () -> Unit
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = when (status) {
-                OrderStatus.NEW -> Color(0xFFE3F2FD)
-                OrderStatus.PREPARING -> Color(0xFFFFF3E0)
-                OrderStatus.READY -> Color(0xFFE8F5E9)
-                OrderStatus.COMPLETED -> Color(0xFFF5F5F5)
-            }
-        )
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(
-                        text = orderNumber,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text(
-                        text = customerName,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                Text(
-                    text = time,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            HorizontalDivider()
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            // Items
-            items.forEach { item ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Restaurant,
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = item, style = MaterialTheme.typography.bodyMedium)
-                }
-            }
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            Text(
-                text = "মোট: $totalAmount",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF4CAF50)
-            )
-            
-            Spacer(modifier = Modifier.height(12.dp))
-            
-            // Actions based on status
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                when (status) {
-                    OrderStatus.NEW -> {
-                        OutlinedButton(
-                            onClick = onReject,
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Text("বাতিল")
-                        }
-                        Button(
-                            onClick = onAccept,
-                            modifier = Modifier.weight(1f)
-                        ) {
-                            Text("গ্রহণ করুন")
-                        }
-                    }
-                    OrderStatus.PREPARING -> {
-                        Button(
-                            onClick = onMarkReady,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Icon(Icons.Default.CheckCircle, contentDescription = null)
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("প্রস্তুত")
-                        }
-                    }
-                    OrderStatus.READY -> {
-                        Button(
-                            onClick = { /* Notify rider */ },
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF4CAF50)
-                            )
-                        ) {
-                            Icon(Icons.Default.DeliveryDining, contentDescription = null)
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("রাইডার অপেক্ষারত")
-                        }
-                    }
-                    OrderStatus.COMPLETED -> {}
-                }
-            }
-        }
     }
 }

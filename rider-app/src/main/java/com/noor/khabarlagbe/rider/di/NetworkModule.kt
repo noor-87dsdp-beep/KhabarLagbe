@@ -1,5 +1,6 @@
 package com.noor.khabarlagbe.rider.di
 
+import com.noor.khabarlagbe.rider.data.api.RiderApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,6 +15,8 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
+    
+    private const val BASE_URL = "https://api.khabarlagbe.com/"
     
     @Provides
     @Singleton
@@ -34,9 +37,15 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://api.khabarlagbe.com/") // Replace with actual API URL
+            .baseUrl(BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+    
+    @Provides
+    @Singleton
+    fun provideRiderApi(retrofit: Retrofit): RiderApi {
+        return retrofit.create(RiderApi::class.java)
     }
 }

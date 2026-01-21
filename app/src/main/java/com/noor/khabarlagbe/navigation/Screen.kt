@@ -43,4 +43,37 @@ sealed class Screen(val route: String) {
     data object SavedAddresses : Screen("saved_addresses")
     data object Favorites : Screen("favorites")
     data object Settings : Screen("settings")
+    
+    // Rewards
+    data object Rewards : Screen("rewards")
+    data object PointsHistory : Screen("points_history")
+    
+    // Wallet
+    data object Wallet : Screen("wallet")
+    data object AddMoney : Screen("add_money")
+    data object TransactionHistory : Screen("transaction_history")
+    
+    // Social
+    data object GroupOrder : Screen("group_order")
+    data object Referral : Screen("referral")
+    data object FriendsFeed : Screen("friends_feed")
+    data object ShareOrder : Screen("share_order/{orderId}") {
+        fun createRoute(orderId: String) = "share_order/$orderId"
+    }
+    
+    // Schedule
+    data object ScheduleOrder : Screen("schedule_order")
+    data object RecurringOrder : Screen("recurring_order")
+    data object MealPlan : Screen("meal_plan")
+    
+    // AI Features
+    data object SmartRecommendations : Screen("smart_recommendations")
+    data object VoiceOrder : Screen("voice_order")
+    
+    // Support
+    data object HelpCenter : Screen("help_center")
+    data object LiveChat : Screen("live_chat")
+    data object ReportIssue : Screen("report_issue/{orderId}") {
+        fun createRoute(orderId: String? = null) = if (orderId != null) "report_issue/$orderId" else "report_issue/none"
+    }
 }
